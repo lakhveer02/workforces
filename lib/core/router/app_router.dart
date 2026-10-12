@@ -8,7 +8,6 @@ import '../../features/auth/presentation/blocs/auth_bloc.dart';
 import '../../features/auth/data/auth_repository.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/employees/presentation/screens/employees_list_screen.dart';
-import '../../features/employees/data/employee_repository.dart';
 import '../../features/attendance/presentation/screens/attendance_screen.dart';
 import '../../features/leaves/presentation/screens/leave_overview_screen.dart';
 import '../../features/leaves/presentation/screens/leave_approvals_screen.dart';
@@ -358,11 +357,7 @@ class AppRouter {
 
 /// Navigation observer for tracking navigation events
 class _NavigationObserver extends NavigatorObserver {
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    super.didPush(route, previousRoute);
-    // TODO: Track navigation for analytics
-  }
+  // TODO: Track navigation for analytics
 }
 
 // Placeholder screen widgets

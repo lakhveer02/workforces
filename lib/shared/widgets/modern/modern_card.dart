@@ -257,7 +257,7 @@ class _TrendIndicator extends StatelessWidget {
 
   final TrendDirection direction;
   final String value;
-  final AppColors colors;
+  final ThemeColors colors;
 
   @override
   Widget build(BuildContext context) {

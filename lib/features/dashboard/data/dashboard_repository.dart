@@ -1,6 +1,4 @@
 import 'dart:math';
-import '../../../shared/models/user.dart';
-import '../../../shared/models/user_role.dart';
 import '../domain/dashboard_models.dart';
 
 abstract class DashboardRepository {

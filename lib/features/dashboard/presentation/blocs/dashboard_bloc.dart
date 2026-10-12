@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../auth/presentation/blocs/auth_bloc.dart';
-import '../../../auth/domain/auth_state.dart';
 import '../../domain/dashboard_models.dart';
 import '../../data/dashboard_repository.dart';
 import '../../../../shared/models/user_role.dart';

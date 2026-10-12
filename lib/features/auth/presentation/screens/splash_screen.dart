@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
                           borderRadius: BorderRadius.circular(AppTheme.radiusXLarge),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: value),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -128,7 +128,7 @@ class _SplashScreenState extends State<SplashScreen>
                       Text(
                         'Enterprise HRMS & Workforce Management',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: value),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -142,7 +142,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white.withOpacity(0.8),
+                            Colors.white.withValues(alpha: value),
                           ),
                         ),
                       ),

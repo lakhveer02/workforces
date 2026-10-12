@@ -137,7 +137,7 @@ class ModernButton extends StatelessWidget {
     }
   }
 
-  _ButtonVariantData _getButtonVariantData(ModernButtonVariant variant, AppColors colors) {
+  _ButtonVariantData _getButtonVariantData(ModernButtonVariant variant, ThemeColors colors) {
     switch (variant) {
       case ModernButtonVariant.primary:
         return _ButtonVariantData(
@@ -291,7 +291,7 @@ class ModernFAB extends StatelessWidget {
     }
   }
 
-  _FABVariantData _getFABVariantData(ModernFABVariant variant, AppColors colors) {
+  _FABVariantData _getFABVariantData(ModernFABVariant variant, ThemeColors colors) {
     switch (variant) {
       case ModernFABVariant.primary:
         return _FABVariantData(
@@ -393,7 +393,7 @@ class ModernIconButton extends StatelessWidget {
 
   _IconButtonVariantData _getIconButtonVariantData(
     ModernIconButtonVariant variant, 
-    AppColors colors,
+    ThemeColors colors,
   ) {
     switch (variant) {
       case ModernIconButtonVariant.filled:

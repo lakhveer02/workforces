@@ -209,7 +209,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: theme.colorScheme.primary.withOpacity(0.1),
+            color: theme.colorScheme.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppTheme.radiusXLarge),
           ),
           child: Icon(
@@ -311,10 +311,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spaceMedium),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withOpacity(0.05),
+        color: theme.colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
         border: Border.all(
-          color: theme.colorScheme.primary.withOpacity(0.2),
+          color: theme.colorScheme.primary.withValues(alpha: 0.2),
         ),
       ),
       child: Column(

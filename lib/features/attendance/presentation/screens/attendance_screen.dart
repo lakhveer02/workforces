@@ -276,19 +276,23 @@ class _AttendanceViewState extends State<AttendanceView> {
 
       // Dispatch punch event
       if (type == PunchType.punchIn) {
-        context.read<AttendanceBloc>().add(
-              const AttendancePunchInRequested(
-                employeeId: 'emp_001',
-                location: 'Office - Main Building',
-              ),
-            );
+        if (mounted) {
+          context.read<AttendanceBloc>().add(
+                const AttendancePunchInRequested(
+                  employeeId: 'emp_001',
+                  location: 'Office - Main Building',
+                ),
+              );
+        }
       } else if (type == PunchType.punchOut) {
-        context.read<AttendanceBloc>().add(
-              const AttendancePunchOutRequested(
-                employeeId: 'emp_001',
-                location: 'Office - Main Building',
-              ),
-            );
+        if (mounted) {
+          context.read<AttendanceBloc>().add(
+                const AttendancePunchOutRequested(
+                  employeeId: 'emp_001',
+                  location: 'Office - Main Building',
+                ),
+              );
+        }
       }
     }
   }

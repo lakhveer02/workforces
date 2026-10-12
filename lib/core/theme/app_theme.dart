@@ -275,7 +275,7 @@ class AppTheme {
 
   /// Light theme configuration
   static ThemeData get lightTheme {
-    final colors = lightColors;
+    const colors = lightColors;
     
     final colorScheme = ColorScheme.light(
       brightness: Brightness.light,
@@ -420,7 +420,7 @@ class AppTheme {
         ),
         color: colors.card,
         surfaceTintColor: Colors.transparent,
-        shadowColor: Colors.black.withOpacity(0.04),
+        shadowColor: Colors.black.withValues(alpha: 0.04),
       ),
 
       // Input Decoration Theme
@@ -461,7 +461,7 @@ class AppTheme {
           backgroundColor: colors.primary,
           foregroundColor: colors.textOnPrimary,
           elevation: elevationSmall,
-          shadowColor: colors.primary.withOpacity(0.3),
+          shadowColor: colors.primary.withValues(alpha: 0.3),
           padding: const EdgeInsets.symmetric(horizontal: spaceXL, vertical: spaceMD),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMD),
@@ -507,7 +507,7 @@ class AppTheme {
         elevation: elevationSmall,
         backgroundColor: colors.tabBarBg,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: colors.primary.withOpacity(0.12),
+        indicatorColor: colors.primary.withValues(alpha: 0.12),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return GoogleFonts.inter(
@@ -533,7 +533,7 @@ class AppTheme {
 
       chipTheme: ChipThemeData(
         backgroundColor: colors.cardSubtle,
-        selectedColor: colors.primary.withOpacity(0.12),
+        selectedColor: colors.primary.withValues(alpha: 0.12),
         labelStyle: GoogleFonts.inter(
           color: colors.textPrimary,
           fontSize: fontSM,
@@ -551,7 +551,7 @@ class AppTheme {
 
   /// Dark theme configuration
   static ThemeData get darkTheme {
-    final colors = darkColors;
+    const colors = darkColors;
     
     final colorScheme = ColorScheme.dark(
       brightness: Brightness.dark,
@@ -696,7 +696,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(radiusMD),
           side: BorderSide(color: colors.cardBorder, width: 1),
         ),
-        shadowColor: Colors.black.withOpacity(0.3),
+        shadowColor: Colors.black.withValues(alpha: 0.3),
       ),
 
       // Input Decoration Theme
@@ -737,7 +737,7 @@ class AppTheme {
           backgroundColor: colors.primary,
           foregroundColor: colors.textOnPrimary,
           elevation: elevationSmall,
-          shadowColor: colors.primary.withOpacity(0.4),
+          shadowColor: colors.primary.withValues(alpha: 0.4),
           padding: const EdgeInsets.symmetric(horizontal: spaceXL, vertical: spaceMD),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMD),
@@ -783,7 +783,7 @@ class AppTheme {
         elevation: elevationNone,
         backgroundColor: colors.tabBarBg,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: colors.primary.withOpacity(0.12),
+        indicatorColor: colors.primary.withValues(alpha: 0.12),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return GoogleFonts.inter(
@@ -816,7 +816,7 @@ class AppTheme {
 
       chipTheme: ChipThemeData(
         backgroundColor: colors.cardSubtle,
-        selectedColor: colors.primary.withOpacity(0.12),
+        selectedColor: colors.primary.withValues(alpha: 0.12),
         labelStyle: GoogleFonts.inter(
           color: colors.textPrimary,
           fontSize: fontSM,
@@ -834,7 +834,7 @@ class AppTheme {
         headingRowColor: WidgetStateProperty.all(colors.cardSubtle),
         dataRowColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return colors.primary.withOpacity(0.08);
+            return colors.primary.withValues(alpha: 0.08);
           }
           return null;
         }),
@@ -1003,27 +1003,49 @@ class AppThemeColors {
 
 /// Backward compatibility color constants
 /// Used by legacy widgets that reference AppColors.primary statically
+/// Legacy static color access for backward compatibility
 class AppColors {
-  AppColors._(); // Private constructor to prevent instantiation
+  static const Color primary = Color(0xFFFC8019);   
+  static const Color secondary = Color(0xFFF59E0B); 
+  static const Color error = Color(0xFFEF4444);     
+  static const Color success = Color(0xFF12B76A);   
+  static const Color warning = Color(0xFFF59E0B);   
+  static const Color info = Color(0xFF3B82F6);      
+  static const Color gray50 = Color(0xFFF9FAFB);    
+  static const Color gray400 = Color(0xFF9CA3AF);   
+  static const Color gray600 = Color(0xFF6B7280);   
+  static const Color gray900 = Color(0xFF1C1C1E);   
+}
+
+/// Modern theme colors for context.colors access
+class ThemeColors {
+  const ThemeColors();
   
-  // Static properties using actual color values for backward compatibility
-  static const Color primary = Color(0xFFFC8019);   // _lightPrimary
-  static const Color secondary = Color(0xFFF59E0B); // _lightWarning
-  static const Color error = Color(0xFFEF4444);     // _lightDanger
-  static const Color success = Color(0xFF12B76A);   // _lightSuccess
-  static const Color warning = Color(0xFFF59E0B);   // _lightWarning
-  static const Color info = Color(0xFF3B82F6);      // _lightInfo
-  static const Color gray50 = Color(0xFFF9FAFB);    // _lightCardSubtle
-  static const Color gray400 = Color(0xFF9CA3AF);   // _lightTextTertiary
-  static const Color gray600 = Color(0xFF6B7280);   // _lightTextSecondary
-  static const Color gray900 = Color(0xFF1C1C1E);   // _lightTextPrimary
+  // Instance getters for context.colors access matching the widget expectations
+  Color get primary => AppColors.primary;
+  Color get secondary => AppColors.secondary;
+  Color get background => const Color(0xFFF6F7FB); 
+  Color get warning => AppColors.warning;
+  Color get success => AppColors.success;
+  Color get error => AppColors.error;
+  Color get info => AppColors.info;
+  Color get card => const Color(0xFFFFFFFF); 
+  Color get cardBorder => const Color(0xFFF1F5F9); 
+  Color get surface => const Color(0xFFFFFFFF); 
+  Color get danger => AppColors.error;
+  Color get cardSubtle => AppColors.gray50;
+  Color get textPrimary => AppColors.gray900;
+  Color get textSecondary => AppColors.gray600;
+  Color get textTertiary => AppColors.gray400;
+  Color get textOnPrimary => const Color(0xFFFFFFFF);
+  Color get border => const Color(0xFFE5E7EB);
 }
 
 /// Extension to easily access current theme colors from BuildContext
 extension AppThemeExtension on BuildContext {
-  AppThemeColors get colors {
-    final isDark = Theme.of(this).brightness == Brightness.dark;
-    return AppTheme.getColors(isDark);
+  ThemeColors get colors {
+    // Return the ThemeColors instance for modern widget compatibility
+    return const ThemeColors();
   }
   
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;

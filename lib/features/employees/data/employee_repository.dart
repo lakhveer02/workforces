@@ -196,7 +196,7 @@ class EmployeeRepository {
         .map((emp) => emp.employeeId)
         .where((id) => id.startsWith('EMP'))
         .map((id) => int.tryParse(id.substring(3)))
-        .where((num) => num != null)
+        .where((number) => number != null)
         .cast<int>()
         .toList();
     

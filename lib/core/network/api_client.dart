@@ -21,9 +21,9 @@ class ApiClient {
   ApiClient._internal() {
     _dio = Dio(BaseOptions(
       baseUrl: _baseUrl,
-      connectTimeout: Duration(milliseconds: _connectTimeout),
-      receiveTimeout: Duration(milliseconds: _receiveTimeout),
-      sendTimeout: Duration(milliseconds: _sendTimeout),
+      connectTimeout: const Duration(milliseconds: _connectTimeout),
+      receiveTimeout: const Duration(milliseconds: _receiveTimeout),
+      sendTimeout: const Duration(milliseconds: _sendTimeout),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -322,7 +322,7 @@ class ApiClient {
         case DioExceptionType.connectionTimeout:
         case DioExceptionType.sendTimeout:
         case DioExceptionType.receiveTimeout:
-          return ApiException(
+          return const ApiException(
             message: 'Connection timeout. Please check your internet connection.',
             statusCode: 408,
             type: ApiExceptionType.timeout,
@@ -341,21 +341,21 @@ class ApiClient {
           );
           
         case DioExceptionType.cancel:
-          return ApiException(
+          return const ApiException(
             message: 'Request was cancelled.',
             statusCode: 0,
             type: ApiExceptionType.cancelled,
           );
           
         case DioExceptionType.connectionError:
-          return ApiException(
+          return const ApiException(
             message: 'No internet connection. Please check your network settings.',
             statusCode: 0,
             type: ApiExceptionType.network,
           );
           
         default:
-          return ApiException(
+          return const ApiException(
             message: 'An unexpected error occurred.',
             statusCode: 0,
             type: ApiExceptionType.unknown,

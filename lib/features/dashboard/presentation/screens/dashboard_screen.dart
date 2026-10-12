@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../shared/widgets/dashboard/app_stat_card.dart';
-import '../../../../shared/widgets/dashboard/app_activity_list.dart';
-import '../../../../shared/widgets/dashboard/app_section_header.dart';
 import '../../../../shared/models/user.dart';
 import '../../../../shared/models/user_role.dart';
 import '../../../auth/domain/auth_state.dart';
@@ -80,7 +77,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 Icon(
                                   Icons.error_outline,
                                   size: 48,
-                                  color: AppColors.error,
+                                  color: context.colors.danger,
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
@@ -88,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.gray900,
+                                    color: context.colors.textPrimary,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -96,7 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   dashboardState.message,
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: AppColors.gray600,
+                                    color: context.colors.textSecondary,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -133,26 +130,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: [
         Text(
           _getGreeting(),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: AppColors.gray600,
+            color: context.colors.textSecondary,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           user.fullName,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
-            color: AppColors.gray900,
+            color: context.colors.textPrimary,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           _getRoleDescription(user.role),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
-            color: AppColors.gray600,
+            color: context.colors.textSecondary,
           ),
         ),
       ],

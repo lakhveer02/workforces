@@ -30,7 +30,7 @@ class ThemeToggleButton extends StatelessWidget {
     );
   }
 
-  Widget _buildToggleWithLabel(BuildContext context, AppColors colors, bool isDark, ThemeState state) {
+  Widget _buildToggleWithLabel(BuildContext context, ThemeColors colors, bool isDark, ThemeState state) {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spaceXS),
       decoration: BoxDecoration(
@@ -67,7 +67,7 @@ class ThemeToggleButton extends StatelessWidget {
     );
   }
 
-  Widget _buildToggleButton(BuildContext context, AppColors colors, bool isDark, ThemeState state) {
+  Widget _buildToggleButton(BuildContext context, ThemeColors colors, bool isDark, ThemeState state) {
     return GestureDetector(
       onTap: () => context.read<ThemeBloc>().add(const ThemeToggled()),
       child: AnimatedContainer(
@@ -117,7 +117,7 @@ class _ThemeOption extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
-  final AppColors colors;
+  final ThemeColors colors;
 
   @override
   Widget build(BuildContext context) {

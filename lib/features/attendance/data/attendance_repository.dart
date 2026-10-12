@@ -166,7 +166,7 @@ class MockAttendanceRepository implements AttendanceRepositoryInterface {
       }
     }
 
-    final totalWorkingDays = 22; // Assuming 22 working days per month
+    const totalWorkingDays = 22; // Assuming 22 working days per month
     final averageHours = presentDays > 0 ? totalHours / presentDays : 0.0;
 
     return AttendanceSummary(

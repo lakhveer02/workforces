@@ -6,6 +6,8 @@ import 'core/theme/theme_bloc.dart';
 import 'core/router/app_router.dart';
 import 'features/auth/presentation/blocs/auth_bloc.dart';
 import 'features/auth/data/auth_repository.dart';
+import 'features/dashboard/presentation/blocs/dashboard_bloc.dart';
+import 'features/dashboard/data/dashboard_repository.dart';
 
 /// WorkforceOS - Enterprise HRMS and Workforce Management System
 /// 
@@ -100,32 +102,42 @@ class WorkforceOSApp extends StatelessWidget {
           create: (context) => AuthBloc(authRepository: authRepository),
         ),
       ],
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, themeState) {
-          return MaterialApp.router(
-            // App Configuration
-            title: 'WorkforceOS',
-            debugShowCheckedModeBanner: false,
-            
-            // Dynamic Theming with Swiggy/Zomato aesthetic
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeState.themeMode,
-            
-            // Routing
-            routerConfig: AppRouter.router,
-            
-            // Localization (will be expanded in later phases)
-            locale: const Locale('en', 'US'),
-            supportedLocales: const [
-              Locale('en', 'US'), // English
-              // Additional locales can be added here
-            ],
-            
-            // Builder for responsive design utilities
-            builder: (context, child) {
-              return ResponsiveBuilder(child: child);
-            },
+      child: Builder(
+        builder: (context) {
+          return BlocProvider<DashboardBloc>(
+            create: (context) => DashboardBloc(
+              dashboardRepository: dashboardRepository,
+              authBloc: context.read<AuthBloc>(),
+            ),
+            child: BlocBuilder<ThemeBloc, ThemeState>(
+              builder: (context, themeState) {
+                return MaterialApp.router(
+                  // App Configuration
+                  title: 'WorkforceOS',
+                  debugShowCheckedModeBanner: false,
+                  
+                  // Dynamic Theming with Swiggy/Zomato aesthetic
+                  theme: AppTheme.lightTheme,
+                  darkTheme: AppTheme.darkTheme,
+                  themeMode: themeState.themeMode,
+                  
+                  // Routing
+                  routerConfig: AppRouter.router,
+                  
+                  // Localization (will be expanded in later phases)
+                  locale: const Locale('en', 'US'),
+                  supportedLocales: const [
+                    Locale('en', 'US'), // English
+                    // Additional locales can be added here
+                  ],
+                  
+                  // Builder for responsive design utilities
+                  builder: (context, child) {
+                    return ResponsiveBuilder(child: child);
+                  },
+                );
+              },
+            ),
           );
         },
       ),

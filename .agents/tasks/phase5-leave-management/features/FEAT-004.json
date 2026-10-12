@@ -1,0 +1,34 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Implement manager approval workflow and complete routing integration including LeaveApprovalsScreen, route guards, and dashboard navigation updates",
+  "status": "pending",
+  "steps": [
+    "Create lib/features/leaves/presentation/blocs/leave_approvals_bloc.dart for manager approval workflow with events for loading pending approvals, approving/rejecting requests",
+    "Create lib/features/leaves/presentation/screens/leave_approvals_screen.dart with role-based access (manager/HR/admin only)",
+    "Display pending requests in responsive table/list format with employee details, dates, reason",
+    "Implement approve/reject actions with confirmation dialogs and success feedback",
+    "Update lib/core/router/app_router.dart to replace placeholder LeavesScreen with LeaveOverviewScreen in leaves branch",
+    "Add sub-routes /leaves/apply -> ApplyLeaveScreen and /leaves/approvals -> LeaveApprovalsScreen within leaves branch",
+    "Add proper BlocProvider setup for both LeaveBloc and LeaveApprovalsBloc in route builders",
+    "Update lib/features/dashboard/presentation/screens/widgets/employee_dashboard_view.dart to navigate to /leaves/apply instead of showing snackbar",
+    "Update lib/features/dashboard/presentation/screens/widgets/manager_dashboard_view.dart to navigate to /leaves/approvals for 'View All' button",
+    "Verify StatefulShellRoute.indexedStack branch index remains stable when adding sub-routes"
+  ],
+  "acceptance_criteria": [
+    "LeaveApprovalsScreen is accessible only to managers/HR/admin with proper role checking",
+    "Route navigation works correctly: /leaves shows overview, /leaves/apply shows form, /leaves/approvals shows manager view",
+    "Dashboard quick action buttons navigate to correct leave screens instead of showing placeholder snackbars",
+    "Approve/reject functionality works with proper state updates and user feedback",
+    "All route transitions maintain proper BLoC state and don't cause navigation errors"
+  ],
+  "verification": [
+    "Run `flutter analyze lib/core/router/app_router.dart` and verify no route compilation errors",
+    "Test navigation flow: Dashboard -> Apply Leave -> Form, Dashboard -> Approvals -> Manager screen",
+    "Verify role-based access by testing with different user roles (employee should not access /leaves/approvals)",
+    "Test approve/reject workflow end-to-end with proper state updates",
+    "Run full app and verify leave module integration doesn't break existing navigation"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

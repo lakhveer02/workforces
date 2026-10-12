@@ -68,22 +68,12 @@ class NavigationMenu {
       requiredPermissions: [Permission.viewTasks],
     ),
 
-    // Payroll - HR, Admin (employees can see their own payslips)
+    // Payroll - All users can view their own salary/payslips
     NavDestination(
       icon: Icons.account_balance_wallet_outlined,
       selectedIcon: Icons.account_balance_wallet,
       label: 'Payroll',
       route: '/payroll',
-      requiredPermissions: [Permission.managePayroll],
-    ),
-
-    // Company Management - Admin only
-    NavDestination(
-      icon: Icons.business_outlined,
-      selectedIcon: Icons.business,
-      label: 'Company',
-      route: '/company',
-      requiredPermissions: [Permission.manageCompanySettings],
     ),
 
     // Analytics & Reports - Manager, HR, Admin
@@ -93,6 +83,14 @@ class NavigationMenu {
       label: 'Analytics',
       route: '/analytics',
       requiredPermissions: [Permission.viewAllReports],
+    ),
+
+    // Settings - Available to all users
+    NavDestination(
+      icon: Icons.settings_outlined,
+      selectedIcon: Icons.settings,
+      label: 'Settings',
+      route: '/settings',
     ),
   ];
 

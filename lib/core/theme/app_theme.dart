@@ -183,10 +183,10 @@ class AppTheme {
   static const double radiusRounded = radiusXL;
 
   /// Get colors based on theme mode
-  static AppColors getColors(bool isDark) => isDark ? darkColors : lightColors;
+  static AppThemeColors getColors(bool isDark) => isDark ? darkColors : lightColors;
 
   /// Light theme colors
-  static const AppColors lightColors = AppColors(
+  static const AppThemeColors lightColors = AppThemeColors(
     // Brand
     primary: _lightPrimary,
     primaryLight: _lightPrimaryLight,
@@ -230,7 +230,7 @@ class AppTheme {
   );
 
   /// Dark theme colors
-  static const AppColors darkColors = AppColors(
+  static const AppThemeColors darkColors = AppThemeColors(
     // Brand
     primary: _darkPrimary,
     primaryLight: _darkPrimaryLight,
@@ -914,8 +914,8 @@ class AppTheme {
 }
 
 /// Color palette class for structured access to theme colors
-class AppColors {
-  const AppColors({
+class AppThemeColors {
+  const AppThemeColors({
     // Brand
     required this.primary,
     required this.primaryLight,
@@ -998,11 +998,30 @@ class AppColors {
   final Color modalBg;
   final Color tabBarBg;
   final Color tabBarBorder;
+  
+}
+
+/// Backward compatibility color constants
+/// Used by legacy widgets that reference AppColors.primary statically
+class AppColors {
+  AppColors._(); // Private constructor to prevent instantiation
+  
+  // Static properties using actual color values for backward compatibility
+  static const Color primary = Color(0xFFFC8019);   // _lightPrimary
+  static const Color secondary = Color(0xFFF59E0B); // _lightWarning
+  static const Color error = Color(0xFFEF4444);     // _lightDanger
+  static const Color success = Color(0xFF12B76A);   // _lightSuccess
+  static const Color warning = Color(0xFFF59E0B);   // _lightWarning
+  static const Color info = Color(0xFF3B82F6);      // _lightInfo
+  static const Color gray50 = Color(0xFFF9FAFB);    // _lightCardSubtle
+  static const Color gray400 = Color(0xFF9CA3AF);   // _lightTextTertiary
+  static const Color gray600 = Color(0xFF6B7280);   // _lightTextSecondary
+  static const Color gray900 = Color(0xFF1C1C1E);   // _lightTextPrimary
 }
 
 /// Extension to easily access current theme colors from BuildContext
 extension AppThemeExtension on BuildContext {
-  AppColors get colors {
+  AppThemeColors get colors {
     final isDark = Theme.of(this).brightness == Brightness.dark;
     return AppTheme.getColors(isDark);
   }

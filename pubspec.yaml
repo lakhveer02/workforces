@@ -23,7 +23,7 @@ dependencies:
 
   # Local Storage & Persistence
   shared_preferences: ^2.2.3     # Simple key-value storage for settings
-  flutter_secure_storage: ^9.0.0 # Secure storage for sensitive data (tokens)
+  flutter_secure_storage: ^11.2.0 # Secure storage for sensitive data (tokens) - Updated for compatibility
   hive: ^2.2.3                   # Fast NoSQL database for offline data
   hive_flutter: ^1.1.0           # Flutter integration for Hive
 
@@ -40,7 +40,7 @@ dependencies:
   logger: ^2.3.0                 # Structured logging for debugging
 
   # File & Media Management
-  file_picker: ^8.0.5            # Cross-platform file selection
+  file_picker: ^13.1.0           # Cross-platform file selection - Latest version with API 36 support
   image_picker: ^1.1.2           # Camera and gallery image selection
 
   # Location Services (for attendance tracking)

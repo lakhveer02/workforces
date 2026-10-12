@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_bloc.dart';
 import 'core/router/app_router.dart';
 import 'features/auth/presentation/blocs/auth_bloc.dart';
 import 'features/auth/data/auth_repository.dart';
@@ -16,26 +17,72 @@ import 'features/auth/data/auth_repository.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Configure system UI overlay style
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
+  // Set up error handling
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint('Flutter Error: ${details.exception}');
+    debugPrint('Stack trace: ${details.stack}');
+  };
 
-  // Set system UI overlay style for Android/iOS
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
+  try {
+    // Configure system UI overlay style
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
 
-  runApp(const WorkforceOSApp());
+    // Set system UI overlay style for Android/iOS
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
+
+    runApp(const WorkforceOSApp());
+  } catch (error, stackTrace) {
+    debugPrint('Error during app initialization: $error');
+    debugPrint('Stack trace: $stackTrace');
+    
+    // Run fallback app with error message
+    runApp(MaterialApp(
+      title: 'WorkforceOS - Error',
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Initialization Error')),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const SizedBox(height: 16),
+                const Text(
+                  'Failed to initialize app',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text('Error: $error'),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    // Try to restart the app
+                    main();
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ));
+  }
 }
 
 /// Root application widget
@@ -46,33 +93,40 @@ class WorkforceOSApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<ThemeBloc>(
+          create: (context) => ThemeBloc()..add(const ThemeInitialized()),
+        ),
         BlocProvider<AuthBloc>(
           create: (context) => AuthBloc(authRepository: authRepository),
         ),
       ],
-      child: MaterialApp.router(
-        // App Configuration
-        title: 'WorkforceOS',
-        debugShowCheckedModeBanner: false,
-        
-        // Theming
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system, // Will be managed by ThemeBloc later
-        
-        // Routing
-        routerConfig: AppRouter.router,
-        
-        // Localization (will be expanded in later phases)
-        locale: const Locale('en', 'US'),
-        supportedLocales: const [
-          Locale('en', 'US'), // English
-          // Additional locales can be added here
-        ],
-        
-        // Builder for responsive design utilities
-        builder: (context, child) {
-          return ResponsiveBuilder(child: child);
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, themeState) {
+          return MaterialApp.router(
+            // App Configuration
+            title: 'WorkforceOS',
+            debugShowCheckedModeBanner: false,
+            
+            // Dynamic Theming with Swiggy/Zomato aesthetic
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeState.themeMode,
+            
+            // Routing
+            routerConfig: AppRouter.router,
+            
+            // Localization (will be expanded in later phases)
+            locale: const Locale('en', 'US'),
+            supportedLocales: const [
+              Locale('en', 'US'), // English
+              // Additional locales can be added here
+            ],
+            
+            // Builder for responsive design utilities
+            builder: (context, child) {
+              return ResponsiveBuilder(child: child);
+            },
+          );
         },
       ),
     );

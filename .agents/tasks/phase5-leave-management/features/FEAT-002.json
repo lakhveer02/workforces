@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Implement leave state management with LeaveBloc following the AttendanceBloc pattern for employee leave overview functionality including balance display and history",
+  "status": "pending",
+  "steps": [
+    "Create lib/features/leaves/presentation/blocs/leave_bloc.dart with LeaveEvent base class",
+    "Define LeaveLoadRequested event for loading employee leave data",
+    "Define LeaveState with status enum (initial/loading/loaded/error), leaveBalance, leaveRequests list, and error fields",
+    "Implement LeaveBloc extending Bloc<LeaveEvent, LeaveState> with LeaveRepository dependency",
+    "Add _onLeaveLoadRequested handler calling repository methods to fetch balance and requests",
+    "Follow the same error handling and state management patterns used in AttendanceBloc",
+    "Ensure all events and states extend Equatable for proper state comparison",
+    "Add proper props overrides for Equatable implementation on all classes"
+  ],
+  "acceptance_criteria": [
+    "LeaveBloc follows the exact same structural patterns as AttendanceBloc",
+    "State management properly handles loading, success, and error states", 
+    "BLoC correctly integrates with LeaveRepository and handles async operations",
+    "All classes properly implement Equatable for state comparison"
+  ],
+  "verification": [
+    "Run `flutter analyze lib/features/leaves/presentation/blocs/` and verify no compilation errors",
+    "Compare generated LeaveBloc structure with AttendanceBloc to ensure consistency",
+    "Verify BLoC can be instantiated with LeaveRepository without runtime errors"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_theme.dart';
 import '../../../../../shared/widgets/dashboard/app_stat_card.dart';
 import '../../../../../shared/widgets/dashboard/app_section_header.dart';
 

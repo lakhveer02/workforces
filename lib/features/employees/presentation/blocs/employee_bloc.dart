@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../data/employee_repository.dart';
-import '../../../../shared/models/employee/employee.dart';
-import '../../../../shared/models/company/department.dart';
+import '../../domain/employee_models.dart';
 
 // Events
 abstract class EmployeeEvent extends Equatable {
@@ -92,7 +91,7 @@ class EmployeeState extends Equatable {
 
   final EmployeeStateStatus status;
   final List<Employee> employees;
-  final List<Department> departments;
+  final List<String> departments;
   final Employee? selectedEmployee;
   final List<Employee> filteredEmployees;
   final String? selectedDepartment;
@@ -110,7 +109,7 @@ class EmployeeState extends Equatable {
   }
 
   List<String> get departmentNames {
-    return departments.map((dept) => dept.name).toList();
+    return departments;
   }
 
   Map<String, int> get employeeCountByDepartment {
@@ -135,7 +134,7 @@ class EmployeeState extends Equatable {
   EmployeeState copyWith({
     EmployeeStateStatus? status,
     List<Employee>? employees,
-    List<Department>? departments,
+    List<String>? departments,
     Employee? selectedEmployee,
     List<Employee>? filteredEmployees,
     String? selectedDepartment,
@@ -193,12 +192,12 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     try {
       emit(state.copyWith(status: EmployeeStateStatus.loading));
       
-      final employees = await _employeeRepository.getAllEmployees();
-      final departments = await _employeeRepository.getAllDepartments();
+      final employeeResult = await _employeeRepository.getEmployees();
+      final departments = await _employeeRepository.getDepartments();
       
       emit(state.copyWith(
         status: EmployeeStateStatus.success,
-        employees: employees,
+        employees: employeeResult.employees,
         departments: departments,
       ));
     } catch (e) {
@@ -216,11 +215,13 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     try {
       emit(state.copyWith(status: EmployeeStateStatus.loading));
       
-      final filteredEmployees = await _employeeRepository.searchEmployees(event.query);
+      final employeeResult = await _employeeRepository.getEmployees(
+        filters: EmployeeFilters(search: event.query),
+      );
       
       emit(state.copyWith(
         status: EmployeeStateStatus.success,
-        filteredEmployees: filteredEmployees,
+        filteredEmployees: employeeResult.employees,
         searchQuery: event.query,
         selectedDepartment: null, // Clear department filter when searching
       ));
@@ -319,14 +320,14 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     try {
       emit(state.copyWith(status: EmployeeStateStatus.loading));
       
-      await _employeeRepository.deactivateEmployee(event.employeeId);
+      await _employeeRepository.deleteEmployee(event.employeeId);
       
       // Reload employees to get updated status
-      final employees = await _employeeRepository.getAllEmployees();
+      final employeeResult = await _employeeRepository.getEmployees();
       
       emit(state.copyWith(
         status: EmployeeStateStatus.success,
-        employees: employees,
+        employees: employeeResult.employees,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -341,7 +342,7 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     Emitter<EmployeeState> emit,
   ) async {
     try {
-      final departments = await _employeeRepository.getAllDepartments();
+      final departments = await _employeeRepository.getDepartments();
       
       emit(state.copyWith(departments: departments));
     } catch (e) {

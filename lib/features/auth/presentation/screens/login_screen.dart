@@ -321,11 +321,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                     },
                   ),
-                  const Text('Remember me'),
+                  const Flexible(
+                    child: Text('Remember me'),
+                  ),
                   const Spacer(),
-                  TextButton(
-                    onPressed: _isLoading ? null : _handleForgotPassword,
-                    child: const Text('Forgot Password?'),
+                  Flexible(
+                    child: TextButton(
+                      onPressed: _isLoading ? null : _handleForgotPassword,
+                      child: const Text('Forgot Password?'),
+                    ),
                   ),
                 ],
               ),

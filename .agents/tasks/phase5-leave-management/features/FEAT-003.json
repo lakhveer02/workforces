@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Implement employee leave screens (LeaveOverviewScreen, ApplyLeaveScreen) with responsive UI, form validation, and BLoC integration following AttendanceScreen patterns",
+  "status": "pending",
+  "steps": [
+    "Create lib/features/leaves/presentation/screens/leave_overview_screen.dart with BlocProvider setup like AttendanceScreen",
+    "Implement responsive layout showing leave balance cards (annual/sick/casual) with AppColors styling",
+    "Add leave history section using DataTable for desktop and ListView for mobile, following AttendanceScreen responsive patterns",
+    "Include floating action button or prominent button to navigate to apply leave screen",
+    "Create lib/features/leaves/presentation/screens/apply_leave_screen.dart as a separate route",
+    "Build leave application form with AppDropdown for leave type, date pickers for start/end dates, and text field for reason",
+    "Implement form validation: end date >= start date, calculate days dynamically, check against available balance",
+    "Add submit button that calls LeaveBloc to submit request, with loading states and error handling",
+    "Style all components using AppColors and follow responsive design patterns from existing screens"
+  ],
+  "acceptance_criteria": [
+    "LeaveOverviewScreen displays balance cards and history with responsive layout (mobile/tablet/desktop)",
+    "ApplyLeaveScreen form validates input correctly and shows dynamic day calculations",
+    "Form prevents submission when insufficient balance and shows appropriate error messages",
+    "Both screens integrate properly with LeaveBloc and handle loading/error states",
+    "UI components use consistent AppColors and match the visual style of existing screens"
+  ],
+  "verification": [
+    "Run `flutter analyze lib/features/leaves/presentation/screens/` and verify no compilation errors",
+    "Test responsive behavior by resizing app window to verify mobile/tablet/desktop layouts",
+    "Verify form validation works correctly by testing various input combinations",
+    "Check that BLoC integration properly updates UI state during data loading and submission"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

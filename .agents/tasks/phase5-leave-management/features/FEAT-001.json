@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Implement leave data layer with domain models (LeaveType, LeaveStatus, LeaveBalance, LeaveRequest) and LeaveRepository with mock data for all leave operations including balance checks, request submission, and approval workflows",
+  "status": "pending",
+  "steps": [
+    "Create lib/features/leaves/domain/leave_models.dart with enums LeaveType (annual, sick, casual, maternity, paternity, unpaid) and LeaveStatus (pending, approved, rejected, cancelled)",
+    "Define LeaveBalance model with annual/sick/casual properties, each having total/used/remaining fields",
+    "Define LeaveRequest model with id, employeeId, employeeName, leaveType, startDate, endDate, daysRequested, reason, status, appliedAt, reviewedBy, reviewedAt, reviewNotes, overlappingColleagues fields",
+    "Create lib/features/leaves/data/leave_repository.dart implementing mock LeaveRepository class",
+    "Implement getLeaveBalance(employeeId) method returning Future<LeaveBalance> with realistic mock data",
+    "Implement getLeaveRequests(employeeId) method returning Future<List<LeaveRequest>> with employee's leave history",
+    "Implement submitLeaveRequest(request) method with validation and mock submission logic",
+    "Implement getPendingApprovals() method for managers returning Future<List<LeaveRequest>>",
+    "Implement approveLeave(requestId, reviewerId, notes) and rejectLeave(requestId, reviewerId, notes) methods"
+  ],
+  "acceptance_criteria": [
+    "All domain models compile without errors and include proper copyWith/toJson/fromJson methods",
+    "LeaveRepository provides realistic mock data with proper date ranges and status transitions",
+    "Balance checks correctly calculate remaining days based on used days",
+    "Repository methods handle edge cases like invalid employee IDs gracefully"
+  ],
+  "verification": [
+    "Run `flutter analyze lib/features/leaves/domain/` and verify no compilation errors",
+    "Run `flutter analyze lib/features/leaves/data/` and verify repository compiles successfully",
+    "Create simple test script to verify repository methods return expected data structures"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

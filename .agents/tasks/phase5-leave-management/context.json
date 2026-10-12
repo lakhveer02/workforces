@@ -1,0 +1,25 @@
+{
+  "project_type": "Flutter HRMS app with BLoC state management and go_router navigation",
+  "language": "Dart/Flutter",
+  "build_system": "Flutter SDK with pub dependencies - no explicit build scripts",
+  "test_framework": "flutter test (built-in testing framework)",
+  "build_command": "flutter analyze && flutter build",
+  "test_command": "flutter test",
+  "verification_instructions": "Run flutter analyze to check for compilation errors, then build/run the app to verify UI functionality and navigation flow",
+  "snapshot_or_generated_files": "null - no generated files to check in",
+  "environment_constraints": "Android requires API 36+ (compileSdk issue mentioned in original error logs)",
+  "contribution_requirements": "Follow BLoC pattern for state management, use go_router for navigation with proper route guards, implement responsive UI (mobile <600px, tablet 600-1200px, desktop >1200px)",
+  "key_patterns": "AttendanceScreen/AttendanceBloc pattern for screens and state management, EmployeeRepository pattern for mock data repositories, AppColors for consistent theming, permission-based routing guards, StatefulShellRoute.indexedStack for main navigation",
+  "relevant_files": [
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/core/router/app_router.dart",
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/features/attendance/presentation/screens/attendance_screen.dart",
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/features/attendance/presentation/bloc/attendance_bloc.dart", 
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/features/attendance/domain/attendance_models.dart",
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/features/employees/data/employee_repository.dart",
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/features/dashboard/presentation/screens/widgets/employee_dashboard_view.dart",
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/features/dashboard/presentation/screens/widgets/manager_dashboard_view.dart",
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/shared/models/user_role.dart",
+    "/Users/squad-mac/Desktop/Flutter/workforces/lib/core/theme/app_colors.dart"
+  ],
+  "directory_structure": "lib/features/{feature}/data/ for repositories, lib/features/{feature}/domain/ for models, lib/features/{feature}/presentation/screens/ for UI screens, lib/features/{feature}/presentation/blocs/ for state management, lib/shared/ for common components and models, lib/core/ for router and theme"
+}

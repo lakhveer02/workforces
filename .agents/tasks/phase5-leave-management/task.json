@@ -1,0 +1,7 @@
+{
+  "task_id": "phase5-leave-management",
+  "task_description": "Implement Phase 5 Leave Management system with employee leave overview, application form, manager approvals, and routing integration",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
+  "blocked_reason": null
+}

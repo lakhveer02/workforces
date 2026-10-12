@@ -8,9 +8,20 @@ import '../../features/auth/presentation/blocs/auth_bloc.dart';
 import '../../features/auth/data/auth_repository.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/employees/presentation/screens/employees_list_screen.dart';
-import '../../features/employees/presentation/blocs/employee_bloc.dart';
 import '../../features/employees/data/employee_repository.dart';
+import '../../features/attendance/presentation/screens/attendance_screen.dart';
+import '../../features/leaves/presentation/screens/leave_overview_screen.dart';
+import '../../features/leaves/presentation/screens/leave_approvals_screen.dart';
+import '../../features/payroll/presentation/screens/salary_overview_screen.dart';
+import '../../features/payroll/presentation/screens/payslip_history_screen.dart';
+import '../../features/tasks/presentation/screens/task_board_screen.dart';
+import '../../features/reports/presentation/screens/analytics_dashboard_screen.dart';
+import '../../features/settings/presentation/screens/profile_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../shared/widgets/layout/app_shell.dart';
+import '../../shared/screens/unauthorized_screen.dart';
+import '../../shared/screens/not_found_screen.dart';
+import '../../shared/models/user_role.dart';
 
 /// WorkforceOS Router Configuration
 /// Declarative routing with deep linking support and role-based access control
@@ -78,6 +89,18 @@ class AppRouter {
     initialLocation: splash,
     observers: [_NavigationObserver()],
     debugLogDiagnostics: true,
+    
+    // Enhanced error handling
+    errorBuilder: (context, state) {
+      // Check if it's a 404 error
+      if (state.error is GoException) {
+        return const NotFoundScreen();
+      }
+      
+      // For other errors, show generic error screen
+      return ErrorScreen(error: state.error);
+    },
+    
     routes: [
       // Splash and Authentication Routes (Unguarded)
       GoRoute(
@@ -121,6 +144,13 @@ class AppRouter {
         },
       ),
 
+      // Unauthorized access route
+      GoRoute(
+        path: '/unauthorized',
+        name: 'unauthorized',
+        builder: (context, state) => const UnauthorizedScreen(),
+      ),
+
       // Main App Shell with Nested Routes (Authenticated)
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -141,18 +171,14 @@ class AppRouter {
             ],
           ),
 
-          // Employees Branch
+          // Employees Branch (HR/Manager only)
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: employees,
                 name: 'employees',
-                builder: (context, state) => BlocProvider(
-                  create: (context) => EmployeeBloc(
-                    employeeRepository: MockEmployeeRepository(),
-                  ),
-                  child: const EmployeesListScreen(),
-                ),
+                builder: (context, state) => const EmployeesListScreen(),
+                redirect: (context, state) => _checkRoleAccess([UserRole.hr, UserRole.manager]),
                 routes: [
                   GoRoute(
                     path: ':id',
@@ -161,11 +187,13 @@ class AppRouter {
                       final id = state.pathParameters['id']!;
                       return EmployeeDetailScreen(employeeId: id);
                     },
+                    redirect: (context, state) => _checkRoleAccess([UserRole.hr, UserRole.manager]),
                   ),
                   GoRoute(
                     path: 'add',
                     name: 'add-employee',
                     builder: (context, state) => const AddEmployeeScreen(),
+                    redirect: (context, state) => _checkRoleAccess([UserRole.hr]),
                   ),
                 ],
               ),
@@ -189,7 +217,15 @@ class AppRouter {
               GoRoute(
                 path: leaves,
                 name: 'leaves',
-                builder: (context, state) => const LeavesScreen(),
+                builder: (context, state) => const LeaveOverviewScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'approvals',
+                    name: 'leave-approvals',
+                    builder: (context, state) => const LeaveApprovalsScreen(),
+                    redirect: (context, state) => _checkRoleAccess([UserRole.hr, UserRole.manager]),
+                  ),
+                ],
               ),
             ],
           ),
@@ -200,16 +236,61 @@ class AppRouter {
               GoRoute(
                 path: tasks,
                 name: 'tasks',
-                builder: (context, state) => const TasksScreen(),
+                builder: (context, state) => const TaskBoardScreen(),
+              ),
+            ],
+          ),
+
+          // Payroll Branch
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: payroll,
+                name: 'payroll',
+                builder: (context, state) => const SalaryOverviewScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'history',
+                    name: 'payslip-history',
+                    builder: (context, state) => const PayslipHistoryScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          // Analytics Branch (HR/Manager only)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: analytics,
+                name: 'analytics',
+                builder: (context, state) => const AnalyticsDashboardScreen(),
+                redirect: (context, state) => _checkRoleAccess([UserRole.hr, UserRole.manager]),
+              ),
+            ],
+          ),
+
+          // Settings Branch
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: settings,
+                name: 'settings',
+                builder: (context, state) => const SettingsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'profile',
+                    name: 'profile',
+                    builder: (context, state) => const ProfileScreen(),
+                  ),
+                ],
               ),
             ],
           ),
         ],
       ),
     ],
-    
-    // Error handling
-    errorBuilder: (context, state) => ErrorScreen(error: state.error),
     
     // Redirect logic for authentication and authorization
     redirect: (context, state) async {
@@ -230,6 +311,30 @@ class AppRouter {
       return null; // No redirect needed
     },
   );
+
+  /// Check role-based access control
+  static String? _checkRoleAccess(List<UserRole> allowedRoles) {
+    try {
+      // In a real app, get this from AuthBloc or UserRepository
+      // For now, we'll use a mock implementation
+      final currentUserRole = _getCurrentUserRole();
+      
+      if (currentUserRole == null || !allowedRoles.contains(currentUserRole)) {
+        return '/unauthorized';
+      }
+      
+      return null; // Access granted
+    } catch (e) {
+      return '/unauthorized';
+    }
+  }
+
+  /// Get current user role (mock implementation)
+  static UserRole? _getCurrentUserRole() {
+    // TODO: Replace with actual user role from AuthBloc/UserRepository
+    // For demo purposes, return HR role
+    return UserRole.hr;
+  }
 
   /// Check if current route is an authentication screen
   static bool _isAuthenticationScreen(String path) {
@@ -299,31 +404,12 @@ class AddEmployeeScreen extends StatelessWidget {
   );
 }
 
-class AttendanceScreen extends StatelessWidget {
-  const AttendanceScreen({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Attendance')),
-    body: const Center(child: Text('Attendance Screen - Coming Soon')),
-  );
-}
 
-class LeavesScreen extends StatelessWidget {
-  const LeavesScreen({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Leave Management')),
-    body: const Center(child: Text('Leave Management Screen - Coming Soon')),
-  );
-}
 
 class TasksScreen extends StatelessWidget {
   const TasksScreen({super.key});
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Tasks')),
-    body: const Center(child: Text('Tasks Screen - Coming Soon')),
-  );
+  Widget build(BuildContext context) => const TaskBoardScreen();
 }
 
 class ErrorScreen extends StatelessWidget {

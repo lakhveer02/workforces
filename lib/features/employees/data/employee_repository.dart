@@ -1,379 +1,80 @@
-import '../../../shared/models/employee/employee.dart';
-import '../../../shared/models/company/department.dart';
-import '../../../shared/models/user.dart';
+import '../domain/employee_models.dart';
 import '../../../shared/models/user_role.dart';
 
-abstract class EmployeeRepository {
-  Future<List<Employee>> getAllEmployees();
-  Future<List<Employee>> getEmployeesByDepartment(String departmentId);
-  Future<List<Employee>> getEmployeesByManager(String managerId);
-  Future<Employee?> getEmployeeById(String id);
-  Future<Employee?> getEmployeeByUserId(String userId);
-  Future<List<Employee>> searchEmployees(String query);
-  Future<Employee> createEmployee(Employee employee);
-  Future<Employee> updateEmployee(Employee employee);
-  Future<void> deactivateEmployee(String id);
-  Future<List<Department>> getAllDepartments();
-}
+/// Mock repository for employee CRUD operations
+class EmployeeRepository {
+  static final List<Employee> _employees = _generateMockEmployees();
 
-class MockEmployeeRepository implements EmployeeRepository {
-  static const Duration _networkDelay = Duration(milliseconds: 800);
+  /// Get paginated list of employees with optional filters
+  Future<EmployeeListResult> getEmployees({
+    int page = 1,
+    int pageSize = 20,
+    EmployeeFilters? filters,
+  }) async {
+    // Simulate network delay
+    await Future.delayed(const Duration(milliseconds: 800));
 
-  // Mock departments
-  static final List<Department> _departments = [
-    Department(
-      id: 'dept_001',
-      name: 'Engineering',
-      description: 'Software development and technology',
-      headId: 'emp_003',
-      headName: 'Michael Johnson',
-      location: 'Building A, Floor 3',
-      budget: 2500000.0,
-      employeeCount: 25,
-    ),
-    Department(
-      id: 'dept_002',
-      name: 'Human Resources',
-      description: 'Employee relations and talent management',
-      headId: 'emp_002',
-      headName: 'Sarah Wilson',
-      location: 'Building B, Floor 2',
-      budget: 800000.0,
-      employeeCount: 8,
-    ),
-    Department(
-      id: 'dept_003',
-      name: 'Marketing',
-      description: 'Brand management and customer acquisition',
-      location: 'Building A, Floor 2',
-      budget: 1200000.0,
-      employeeCount: 12,
-    ),
-    Department(
-      id: 'dept_004',
-      name: 'Sales',
-      description: 'Revenue generation and client relations',
-      location: 'Building B, Floor 1',
-      budget: 1800000.0,
-      employeeCount: 15,
-    ),
-    Department(
-      id: 'dept_005',
-      name: 'Finance',
-      description: 'Financial planning and accounting',
-      location: 'Building A, Floor 1',
-      budget: 600000.0,
-      employeeCount: 6,
-    ),
-  ];
+    var filteredEmployees = _employees;
 
-  // Mock employees with realistic data
-  static final List<Employee> _employees = [
-    Employee(
-      id: 'emp_001',
-      employeeId: 'WOS001',
-      user: User(
-        id: '1',
-        email: 'admin@workforceos.com',
-        firstName: 'John',
-        lastName: 'Admin',
-        role: UserRole.admin,
-        phone: '+1-555-0101',
-        department: 'Information Technology',
-        designation: 'System Administrator',
-        joinDate: DateTime(2020, 1, 15),
-      ),
-      department: 'Information Technology',
-      designation: 'System Administrator',
-      joinDate: DateTime(2020, 1, 15),
-      employmentType: EmploymentType.fullTime,
-      status: EmployeeStatus.active,
-      workLocation: 'Building A, Floor 4',
-      workPhone: '+1-555-0101-ext-100',
-      salary: 95000.0,
-      emergencyContact: EmergencyContact(
-        name: 'Jane Admin',
-        relationship: 'Spouse',
-        phone: '+1-555-0102',
-        email: 'jane.admin@email.com',
-      ),
-      address: Address(
-        street: '123 Admin Street',
-        city: 'Tech City',
-        state: 'CA',
-        country: 'USA',
-        zipCode: '90210',
-      ),
-      dateOfBirth: DateTime(1985, 3, 20),
-    ),
-    Employee(
-      id: 'emp_002',
-      employeeId: 'WOS002',
-      user: User(
-        id: '2',
-        email: 'hr@workforceos.com',
-        firstName: 'Sarah',
-        lastName: 'Wilson',
-        role: UserRole.hr,
-        phone: '+1-555-0102',
-        department: 'Human Resources',
-        designation: 'HR Manager',
-        joinDate: DateTime(2020, 3, 22),
-      ),
-      department: 'Human Resources',
-      designation: 'HR Manager',
-      joinDate: DateTime(2020, 3, 22),
-      employmentType: EmploymentType.fullTime,
-      status: EmployeeStatus.active,
-      workLocation: 'Building B, Floor 2',
-      workPhone: '+1-555-0102-ext-200',
-      salary: 85000.0,
-      emergencyContact: EmergencyContact(
-        name: 'Robert Wilson',
-        relationship: 'Brother',
-        phone: '+1-555-0103',
-      ),
-      address: Address(
-        street: '456 HR Avenue',
-        city: 'Business Park',
-        state: 'CA',
-        country: 'USA',
-        zipCode: '90211',
-      ),
-      dateOfBirth: DateTime(1988, 7, 14),
-    ),
-    Employee(
-      id: 'emp_003',
-      employeeId: 'WOS003',
-      user: User(
-        id: '3',
-        email: 'manager@workforceos.com',
-        firstName: 'Michael',
-        lastName: 'Johnson',
-        role: UserRole.manager,
-        phone: '+1-555-0103',
-        department: 'Engineering',
-        designation: 'Engineering Manager',
-        joinDate: DateTime(2021, 1, 10),
-      ),
-      department: 'Engineering',
-      designation: 'Engineering Manager',
-      joinDate: DateTime(2021, 1, 10),
-      employmentType: EmploymentType.fullTime,
-      status: EmployeeStatus.active,
-      managerId: 'emp_001',
-      managerName: 'John Admin',
-      workLocation: 'Building A, Floor 3',
-      workPhone: '+1-555-0103-ext-300',
-      salary: 110000.0,
-      emergencyContact: EmergencyContact(
-        name: 'Lisa Johnson',
-        relationship: 'Spouse',
-        phone: '+1-555-0104',
-        email: 'lisa.johnson@email.com',
-      ),
-      address: Address(
-        street: '789 Engineering Drive',
-        city: 'Innovation Hub',
-        state: 'CA',
-        country: 'USA',
-        zipCode: '90212',
-      ),
-      dateOfBirth: DateTime(1987, 11, 5),
-    ),
-    Employee(
-      id: 'emp_004',
-      employeeId: 'WOS004',
-      user: User(
-        id: '4',
-        email: 'employee@workforceos.com',
-        firstName: 'Emily',
-        lastName: 'Davis',
-        role: UserRole.employee,
-        phone: '+1-555-0104',
-        department: 'Engineering',
-        designation: 'Software Developer',
-        managerId: '3',
-        joinDate: DateTime(2022, 6, 15),
-      ),
-      department: 'Engineering',
-      designation: 'Software Developer',
-      joinDate: DateTime(2022, 6, 15),
-      employmentType: EmploymentType.fullTime,
-      status: EmployeeStatus.active,
-      managerId: 'emp_003',
-      managerName: 'Michael Johnson',
-      workLocation: 'Building A, Floor 3',
-      workPhone: '+1-555-0104-ext-301',
-      salary: 75000.0,
-      emergencyContact: EmergencyContact(
-        name: 'Mark Davis',
-        relationship: 'Father',
-        phone: '+1-555-0105',
-      ),
-      address: Address(
-        street: '321 Developer Lane',
-        city: 'Code Valley',
-        state: 'CA',
-        country: 'USA',
-        zipCode: '90213',
-      ),
-      dateOfBirth: DateTime(1995, 4, 18),
-    ),
-    Employee(
-      id: 'emp_005',
-      employeeId: 'WOS005',
-      user: User(
-        id: '5',
-        email: 'alice.cooper@workforceos.com',
-        firstName: 'Alice',
-        lastName: 'Cooper',
-        role: UserRole.employee,
-        phone: '+1-555-0105',
-        department: 'Engineering',
-        designation: 'Senior Software Engineer',
-        joinDate: DateTime(2019, 8, 12),
-      ),
-      department: 'Engineering',
-      designation: 'Senior Software Engineer',
-      joinDate: DateTime(2019, 8, 12),
-      employmentType: EmploymentType.fullTime,
-      status: EmployeeStatus.active,
-      managerId: 'emp_003',
-      managerName: 'Michael Johnson',
-      workLocation: 'Building A, Floor 3',
-      workPhone: '+1-555-0105-ext-302',
-      salary: 95000.0,
-      emergencyContact: EmergencyContact(
-        name: 'Bob Cooper',
-        relationship: 'Spouse',
-        phone: '+1-555-0106',
-        email: 'bob.cooper@email.com',
-      ),
-      address: Address(
-        street: '654 Senior Street',
-        city: 'Expert City',
-        state: 'CA',
-        country: 'USA',
-        zipCode: '90214',
-      ),
-      dateOfBirth: DateTime(1990, 12, 8),
-    ),
-    Employee(
-      id: 'emp_006',
-      employeeId: 'WOS006',
-      user: User(
-        id: '6',
-        email: 'david.brown@workforceos.com',
-        firstName: 'David',
-        lastName: 'Brown',
-        role: UserRole.employee,
-        phone: '+1-555-0106',
-        department: 'Marketing',
-        designation: 'Marketing Specialist',
-        joinDate: DateTime(2023, 1, 20),
-      ),
-      department: 'Marketing',
-      designation: 'Marketing Specialist',
-      joinDate: DateTime(2023, 1, 20),
-      employmentType: EmploymentType.fullTime,
-      status: EmployeeStatus.active,
-      workLocation: 'Building A, Floor 2',
-      workPhone: '+1-555-0106-ext-201',
-      salary: 65000.0,
-      emergencyContact: EmergencyContact(
-        name: 'Susan Brown',
-        relationship: 'Mother',
-        phone: '+1-555-0107',
-      ),
-      dateOfBirth: DateTime(1993, 9, 25),
-    ),
-    Employee(
-      id: 'emp_007',
-      employeeId: 'WOS007',
-      user: User(
-        id: '7',
-        email: 'jennifer.garcia@workforceos.com',
-        firstName: 'Jennifer',
-        lastName: 'Garcia',
-        role: UserRole.manager,
-        phone: '+1-555-0107',
-        department: 'Sales',
-        designation: 'Sales Manager',
-        joinDate: DateTime(2021, 5, 3),
-      ),
-      department: 'Sales',
-      designation: 'Sales Manager',
-      joinDate: DateTime(2021, 5, 3),
-      employmentType: EmploymentType.fullTime,
-      status: EmployeeStatus.active,
-      managerId: 'emp_001',
-      managerName: 'John Admin',
-      workLocation: 'Building B, Floor 1',
-      workPhone: '+1-555-0107-ext-101',
-      salary: 98000.0,
-      emergencyContact: EmergencyContact(
-        name: 'Carlos Garcia',
-        relationship: 'Spouse',
-        phone: '+1-555-0108',
-        email: 'carlos.garcia@email.com',
-      ),
-      dateOfBirth: DateTime(1986, 2, 14),
-    ),
-    Employee(
-      id: 'emp_008',
-      employeeId: 'WOS008',
-      user: User(
-        id: '8',
-        email: 'robert.taylor@workforceos.com',
-        firstName: 'Robert',
-        lastName: 'Taylor',
-        role: UserRole.employee,
-        phone: '+1-555-0108',
-        department: 'Finance',
-        designation: 'Financial Analyst',
-        joinDate: DateTime(2022, 11, 8),
-      ),
-      department: 'Finance',
-      designation: 'Financial Analyst',
-      joinDate: DateTime(2022, 11, 8),
-      employmentType: EmploymentType.fullTime,
-      status: EmployeeStatus.active,
-      workLocation: 'Building A, Floor 1',
-      workPhone: '+1-555-0108-ext-111',
-      salary: 70000.0,
-      emergencyContact: EmergencyContact(
-        name: 'Mary Taylor',
-        relationship: 'Sister',
-        phone: '+1-555-0109',
-      ),
-      dateOfBirth: DateTime(1992, 6, 30),
-    ),
-  ];
+    // Apply filters
+    if (filters != null) {
+      if (filters.search != null && filters.search!.isNotEmpty) {
+        final searchLower = filters.search!.toLowerCase();
+        filteredEmployees = filteredEmployees.where((emp) =>
+            emp.fullName.toLowerCase().contains(searchLower) ||
+            emp.email.toLowerCase().contains(searchLower) ||
+            emp.employeeId.toLowerCase().contains(searchLower) ||
+            emp.department.toLowerCase().contains(searchLower)).toList();
+      }
 
-  @override
-  Future<List<Employee>> getAllEmployees() async {
-    await Future.delayed(_networkDelay);
-    return List.from(_employees);
+      if (filters.department != null) {
+        filteredEmployees = filteredEmployees
+            .where((emp) => emp.department == filters.department)
+            .toList();
+      }
+
+      if (filters.role != null) {
+        filteredEmployees = filteredEmployees
+            .where((emp) => emp.role == filters.role)
+            .toList();
+      }
+
+      if (filters.status != null) {
+        filteredEmployees = filteredEmployees
+            .where((emp) => emp.status == filters.status)
+            .toList();
+      }
+
+      if (filters.managerId != null) {
+        filteredEmployees = filteredEmployees
+            .where((emp) => emp.managerId == filters.managerId)
+            .toList();
+      }
+    }
+
+    // Sort by name for consistent ordering
+    filteredEmployees.sort((a, b) => a.fullName.compareTo(b.fullName));
+
+    final totalCount = filteredEmployees.length;
+    final startIndex = (page - 1) * pageSize;
+    final endIndex = (startIndex + pageSize).clamp(0, totalCount);
+
+    final pageEmployees = filteredEmployees.sublist(startIndex, endIndex);
+    final hasNextPage = endIndex < totalCount;
+
+    return EmployeeListResult(
+      employees: pageEmployees,
+      totalCount: totalCount,
+      page: page,
+      pageSize: pageSize,
+      hasNextPage: hasNextPage,
+    );
   }
 
-  @override
-  Future<List<Employee>> getEmployeesByDepartment(String departmentName) async {
-    await Future.delayed(_networkDelay);
-    return _employees
-        .where((emp) => emp.department.toLowerCase() == departmentName.toLowerCase())
-        .toList();
-  }
-
-  @override
-  Future<List<Employee>> getEmployeesByManager(String managerId) async {
-    await Future.delayed(_networkDelay);
-    return _employees.where((emp) => emp.managerId == managerId).toList();
-  }
-
-  @override
+  /// Get employee by ID
   Future<Employee?> getEmployeeById(String id) async {
-    await Future.delayed(_networkDelay);
+    await Future.delayed(const Duration(milliseconds: 300));
+    
     try {
       return _employees.firstWhere((emp) => emp.id == id);
     } catch (e) {
@@ -381,84 +82,273 @@ class MockEmployeeRepository implements EmployeeRepository {
     }
   }
 
-  @override
-  Future<Employee?> getEmployeeByUserId(String userId) async {
-    await Future.delayed(_networkDelay);
+  /// Get employee by employee ID (EMP001, etc.)
+  Future<Employee?> getEmployeeByEmployeeId(String employeeId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    
     try {
-      return _employees.firstWhere((emp) => emp.user.id == userId);
+      return _employees.firstWhere((emp) => emp.employeeId == employeeId);
     } catch (e) {
       return null;
     }
   }
 
-  @override
-  Future<List<Employee>> searchEmployees(String query) async {
-    await Future.delayed(_networkDelay);
-    
-    if (query.isEmpty) return _employees;
-    
-    final lowercaseQuery = query.toLowerCase();
-    
-    return _employees.where((emp) {
-      return emp.fullName.toLowerCase().contains(lowercaseQuery) ||
-             emp.email.toLowerCase().contains(lowercaseQuery) ||
-             emp.employeeId.toLowerCase().contains(lowercaseQuery) ||
-             emp.department.toLowerCase().contains(lowercaseQuery) ||
-             emp.designation.toLowerCase().contains(lowercaseQuery);
-    }).toList();
-  }
-
-  @override
+  /// Create new employee
   Future<Employee> createEmployee(Employee employee) async {
-    await Future.delayed(_networkDelay);
+    await Future.delayed(const Duration(milliseconds: 1000));
+
+    // Validate unique constraints
+    if (_employees.any((emp) => emp.email == employee.email)) {
+      throw Exception('Employee with this email already exists');
+    }
     
-    // Generate new employee ID
-    final newId = 'emp_${(_employees.length + 1).toString().padLeft(3, '0')}';
-    final newEmployeeId = 'WOS${(_employees.length + 1).toString().padLeft(3, '0')}';
-    
+    if (_employees.any((emp) => emp.employeeId == employee.employeeId)) {
+      throw Exception('Employee ID already exists');
+    }
+
     final newEmployee = employee.copyWith(
-      id: newId,
-      employeeId: newEmployeeId,
+      id: 'emp_${DateTime.now().millisecondsSinceEpoch}',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
-    
+
     _employees.add(newEmployee);
     return newEmployee;
   }
 
-  @override
+  /// Update existing employee
   Future<Employee> updateEmployee(Employee employee) async {
-    await Future.delayed(_networkDelay);
-    
+    await Future.delayed(const Duration(milliseconds: 800));
+
     final index = _employees.indexWhere((emp) => emp.id == employee.id);
     if (index == -1) {
       throw Exception('Employee not found');
     }
+
+    // Validate unique constraints (excluding current employee)
+    if (_employees.any((emp) => 
+        emp.id != employee.id && emp.email == employee.email)) {
+      throw Exception('Another employee with this email already exists');
+    }
+
+    if (_employees.any((emp) => 
+        emp.id != employee.id && emp.employeeId == employee.employeeId)) {
+      throw Exception('Another employee with this ID already exists');
+    }
+
+    final updatedEmployee = employee.copyWith(updatedAt: DateTime.now());
+    _employees[index] = updatedEmployee;
     
-    _employees[index] = employee;
-    return employee;
+    return updatedEmployee;
   }
 
-  @override
-  Future<void> deactivateEmployee(String id) async {
-    await Future.delayed(_networkDelay);
-    
+  /// Delete employee (soft delete - mark as inactive)
+  Future<void> deleteEmployee(String id) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+
     final index = _employees.indexWhere((emp) => emp.id == id);
     if (index == -1) {
       throw Exception('Employee not found');
     }
-    
+
     _employees[index] = _employees[index].copyWith(
-      status: EmployeeStatus.inactive,
-      lastWorkingDay: DateTime.now(),
+      isActive: false,
+      updatedAt: DateTime.now(),
     );
   }
 
-  @override
-  Future<List<Department>> getAllDepartments() async {
-    await Future.delayed(_networkDelay);
-    return List.from(_departments);
+  /// Get all departments
+  Future<List<String>> getDepartments() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    
+    final departments = _employees
+        .map((emp) => emp.department)
+        .toSet()
+        .toList();
+    departments.sort();
+    
+    return departments;
+  }
+
+  /// Get employees by department
+  Future<List<Employee>> getEmployeesByDepartment(String department) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    
+    return _employees
+        .where((emp) => emp.department == department && emp.isActive)
+        .toList();
+  }
+
+  /// Get employees by manager ID
+  Future<List<Employee>> getEmployeesByManager(String managerId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    
+    return _employees
+        .where((emp) => emp.managerId == managerId && emp.isActive)
+        .toList();
+  }
+
+  /// Generate next employee ID
+  Future<String> generateNextEmployeeId() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    
+    final existingIds = _employees
+        .map((emp) => emp.employeeId)
+        .where((id) => id.startsWith('EMP'))
+        .map((id) => int.tryParse(id.substring(3)))
+        .where((num) => num != null)
+        .cast<int>()
+        .toList();
+    
+    if (existingIds.isEmpty) return 'EMP001';
+    
+    final maxId = existingIds.reduce((a, b) => a > b ? a : b);
+    return 'EMP${(maxId + 1).toString().padLeft(3, '0')}';
+  }
+
+  /// Get dashboard statistics
+  Future<Map<String, dynamic>> getEmployeeStats() async {
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    final activeEmployees = _employees.where((emp) => emp.isActive).toList();
+    
+    return {
+      'totalEmployees': activeEmployees.length,
+      'newThisMonth': activeEmployees.where((emp) => 
+          emp.joinDate.isAfter(DateTime.now().subtract(const Duration(days: 30)))).length,
+      'byDepartment': _groupByDepartment(activeEmployees),
+      'byRole': _groupByRole(activeEmployees),
+      'averageTenure': _calculateAverageTenure(activeEmployees),
+    };
+  }
+
+  Map<String, int> _groupByDepartment(List<Employee> employees) {
+    final groups = <String, int>{};
+    for (final emp in employees) {
+      groups[emp.department] = (groups[emp.department] ?? 0) + 1;
+    }
+    return groups;
+  }
+
+  Map<String, int> _groupByRole(List<Employee> employees) {
+    final groups = <String, int>{};
+    for (final emp in employees) {
+      groups[emp.role.displayName] = (groups[emp.role.displayName] ?? 0) + 1;
+    }
+    return groups;
+  }
+
+  double _calculateAverageTenure(List<Employee> employees) {
+    if (employees.isEmpty) return 0.0;
+    
+    final totalDays = employees
+        .map((emp) => DateTime.now().difference(emp.joinDate).inDays)
+        .reduce((a, b) => a + b);
+    
+    return totalDays / employees.length / 365; // Return in years
+  }
+
+  /// Generate realistic mock employee data
+  static List<Employee> _generateMockEmployees() {
+    final now = DateTime.now();
+    final employees = <Employee>[];
+
+    // Departments and their typical roles
+    final departments = {
+      'Engineering': ['Software Engineer', 'Senior Engineer', 'Tech Lead', 'Engineering Manager'],
+      'Design': ['UI Designer', 'UX Designer', 'Design Lead', 'Creative Director'],
+      'Product': ['Product Manager', 'Senior PM', 'Product Director'],
+      'Marketing': ['Marketing Manager', 'Content Writer', 'SEO Specialist', 'Marketing Director'],
+      'Sales': ['Sales Executive', 'Account Manager', 'Sales Manager', 'VP Sales'],
+      'Human Resources': ['HR Executive', 'HR Manager', 'Recruiter', 'HR Director'],
+      'Finance': ['Accountant', 'Finance Manager', 'Financial Analyst', 'CFO'],
+      'Operations': ['Operations Manager', 'Office Manager', 'Admin Executive'],
+    };
+
+    // Sample employee data
+    final employeeData = [
+      {'name': 'John Smith', 'email': 'john.smith@workforce.com', 'phone': '+91-9876543210'},
+      {'name': 'Sarah Johnson', 'email': 'sarah.johnson@workforce.com', 'phone': '+91-9876543211'},
+      {'name': 'Mike Chen', 'email': 'mike.chen@workforce.com', 'phone': '+91-9876543212'},
+      {'name': 'Emily Davis', 'email': 'emily.davis@workforce.com', 'phone': '+91-9876543213'},
+      {'name': 'Alex Thompson', 'email': 'alex.thompson@workforce.com', 'phone': '+91-9876543214'},
+      {'name': 'Maria Garcia', 'email': 'maria.garcia@workforce.com', 'phone': '+91-9876543215'},
+      {'name': 'David Wilson', 'email': 'david.wilson@workforce.com', 'phone': '+91-9876543216'},
+      {'name': 'Lisa Anderson', 'email': 'lisa.anderson@workforce.com', 'phone': '+91-9876543217'},
+      {'name': 'Robert Lee', 'email': 'robert.lee@workforce.com', 'phone': '+91-9876543218'},
+      {'name': 'Jennifer Taylor', 'email': 'jennifer.taylor@workforce.com', 'phone': '+91-9876543219'},
+      {'name': 'James Brown', 'email': 'james.brown@workforce.com', 'phone': '+91-9876543220'},
+      {'name': 'Amanda White', 'email': 'amanda.white@workforce.com', 'phone': '+91-9876543221'},
+      {'name': 'Christopher Moore', 'email': 'chris.moore@workforce.com', 'phone': '+91-9876543222'},
+      {'name': 'Michelle Clark', 'email': 'michelle.clark@workforce.com', 'phone': '+91-9876543223'},
+      {'name': 'Daniel Rodriguez', 'email': 'daniel.rodriguez@workforce.com', 'phone': '+91-9876543224'},
+      {'name': 'Karen Miller', 'email': 'karen.miller@workforce.com', 'phone': '+91-9876543225'},
+      {'name': 'Steven Martinez', 'email': 'steven.martinez@workforce.com', 'phone': '+91-9876543226'},
+      {'name': 'Patricia Lewis', 'email': 'patricia.lewis@workforce.com', 'phone': '+91-9876543227'},
+      {'name': 'Kevin Walker', 'email': 'kevin.walker@workforce.com', 'phone': '+91-9876543228'},
+      {'name': 'Nancy Hall', 'email': 'nancy.hall@workforce.com', 'phone': '+91-9876543229'},
+    ];
+
+    int empIndex = 1;
+    String? ceoId;
+
+    for (int i = 0; i < employeeData.length; i++) {
+      final data = employeeData[i];
+      final names = data['name']!.split(' ');
+      final firstName = names[0];
+      final lastName = names.length > 1 ? names[1] : '';
+      
+      // Select random department and role
+      final deptEntry = departments.entries.elementAt(i % departments.length);
+      final department = deptEntry.key;
+      final roles = deptEntry.value;
+      final designation = roles[i % roles.length];
+      
+      // Determine user role based on designation
+      UserRole userRole = UserRole.employee;
+      if (designation.contains('Director') || designation.contains('VP') || designation.contains('CFO')) {
+        userRole = UserRole.admin;
+      } else if (designation.contains('Manager') || designation.contains('Lead')) {
+        userRole = UserRole.manager;
+      } else if (department == 'Human Resources') {
+        userRole = UserRole.hr;
+      }
+
+      // Create employee
+      final employee = Employee(
+        id: 'emp_${i + 1}',
+        employeeId: 'EMP${empIndex.toString().padLeft(3, '0')}',
+        firstName: firstName,
+        lastName: lastName,
+        email: data['email']!,
+        phone: data['phone']!,
+        role: userRole,
+        department: department,
+        designation: designation,
+        joinDate: now.subtract(Duration(days: 30 + (i * 45))),
+        managerId: i > 0 && userRole != UserRole.admin ? (ceoId ?? 'emp_1') : null,
+        managerName: i > 0 && userRole != UserRole.admin ? 'John Smith' : null,
+        address: '${100 + i}, Sample Street, Mumbai, Maharashtra, 400001',
+        emergencyContact: 'Emergency Contact ${i + 1}',
+        emergencyPhone: '+91-9876540${i.toString().padLeft(3, '0')}',
+        dateOfBirth: DateTime(1985 + (i % 15), 1 + (i % 12), 1 + (i % 28)),
+        bloodGroup: ['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-'][i % 8],
+        maritalStatus: i % 3 == 0 ? MaritalStatus.married : MaritalStatus.single,
+        salary: 50000.0 + (i * 15000.0),
+        bankAccount: '1234567890${i.toString().padLeft(2, '0')}',
+        panNumber: 'ABCDE${(1234 + i).toString()}F',
+        aadharNumber: '1234${i.toString().padLeft(8, '0')}',
+        isActive: i < 18, // Make a few inactive for testing
+        lastLoginAt: now.subtract(Duration(hours: i % 72)),
+        createdAt: now.subtract(Duration(days: 30 + (i * 45))),
+        updatedAt: now.subtract(Duration(days: i % 7)),
+      );
+
+      if (i == 0) ceoId = employee.id; // First employee is CEO/Admin
+      employees.add(employee);
+      empIndex++;
+    }
+
+    return employees;
   }
 }
-
-// Singleton instance
-final EmployeeRepository employeeRepository = MockEmployeeRepository();

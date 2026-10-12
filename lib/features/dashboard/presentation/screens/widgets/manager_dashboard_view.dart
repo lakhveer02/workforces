@@ -208,7 +208,7 @@ class ManagerDashboardView extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor: AppColors.primary.withValues(alpha: $1),
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                       child: Text(
                         member.name.split(' ').map((n) => n[0]).join().toUpperCase(),
                         style: const TextStyle(
@@ -249,7 +249,7 @@ class ManagerDashboardView extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(member.status).withValues(alpha: $1),
+                        color: _getStatusColor(member.status).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -283,7 +283,7 @@ class ManagerDashboardView extends StatelessWidget {
               Icon(
                 Icons.check_circle_outline,
                 size: 48,
-                color: AppColors.success.withValues(alpha: $1),
+                color: AppColors.success.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 16),
               Text(
@@ -346,7 +346,7 @@ class ManagerDashboardView extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: _getApprovalTypeColor(approval.type).withValues(alpha: $1),
+                        color: _getApprovalTypeColor(approval.type).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(

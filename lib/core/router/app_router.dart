@@ -5,7 +5,7 @@ import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_verification_screen.dart';
 import '../../features/auth/presentation/blocs/auth_bloc.dart';
-import '../../features/auth/data/auth_repository.dart';
+import '../../features/auth/domain/auth_state.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/employees/presentation/screens/employees_list_screen.dart';
 import '../../features/attendance/presentation/screens/attendance_screen.dart';
@@ -105,18 +105,12 @@ class AppRouter {
       GoRoute(
         path: splash,
         name: 'splash',
-        builder: (context, state) => BlocProvider(
-          create: (context) => AuthBloc(authRepository: authRepository),
-          child: const SplashScreen(),
-        ),
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
         path: login,
         name: 'login',
-        builder: (context, state) => BlocProvider(
-          create: (context) => AuthBloc(authRepository: authRepository),
-          child: const LoginScreen(),
-        ),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: forgotPassword,
@@ -136,10 +130,7 @@ class AppRouter {
         name: 'otp',
         builder: (context, state) {
           final email = state.extra as String?;
-          return BlocProvider(
-            create: (context) => AuthBloc(authRepository: authRepository),
-            child: OtpVerificationScreen(email: email),
-          );
+          return OtpVerificationScreen(email: email);
         },
       ),
 
@@ -291,23 +282,23 @@ class AppRouter {
       ),
     ],
     
-    // Redirect logic for authentication and authorization
-    redirect: (context, state) async {
-      // Check authentication status
-      final isAuthenticated = await _checkAuthentication();
+    // Redirect logic for authentication
+    redirect: (context, state) {
+      // Read current auth state synchronously from the root AuthBloc
+      final authState = context.read<AuthBloc>().state;
       final isOnAuthScreen = _isAuthenticationScreen(state.matchedLocation);
       
-      // Redirect unauthenticated users to login (except auth screens)
-      if (!isAuthenticated && !isOnAuthScreen) {
+      // Only protect authenticated routes: if trying to access a protected route
+      // while not authenticated (and not in a loading/initial transient state),
+      // redirect to login.
+      if (!authState.isAuthenticated &&
+          !isOnAuthScreen &&
+          authState.status != AuthStatus.loading &&
+          authState.status != AuthStatus.initial) {
         return login;
       }
       
-      // Redirect authenticated users away from auth screens
-      if (isAuthenticated && isOnAuthScreen) {
-        return dashboard;
-      }
-      
-      return null; // No redirect needed
+      return null; // No redirect — let BlocListeners in auth screens handle forward navigation
     },
   );
 
@@ -342,16 +333,6 @@ class AppRouter {
            path == resetPassword || 
            path == otp ||
            path == splash;
-  }
-
-  /// Check authentication status
-  static Future<bool> _checkAuthentication() async {
-    try {
-      final user = await authRepository.getCurrentUser();
-      return user != null;
-    } catch (e) {
-      return false;
-    }
   }
 }
 

@@ -215,7 +215,7 @@ class EmployeeDashboardView extends StatelessWidget {
   }) {
     return Card(
       elevation: 0,
-      color: color.withValues(alpha: $1),
+      color: color.withValues(alpha: 0.1),
       child: InkWell(
         onTap: () {
           // TODO: Implement punch in/out functionality
@@ -264,7 +264,7 @@ class EmployeeDashboardView extends StatelessWidget {
   ) {
     return Card(
       elevation: 0,
-      color: color.withValues(alpha: $1),
+      color: color.withValues(alpha: 0.1),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -342,7 +342,7 @@ class EmployeeDashboardView extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: $1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(

@@ -67,7 +67,9 @@ class _AppShellState extends State<AppShell> {
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, authState) {
           if (!authState.isAuthenticated) {
-            return const SizedBox.shrink();
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
           }
 
           final user = authState.user!;

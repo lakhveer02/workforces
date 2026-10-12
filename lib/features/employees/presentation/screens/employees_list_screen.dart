@@ -182,10 +182,10 @@ class _EmployeesListScreenState extends State<EmployeesListScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(employee.status).withValues(alpha: $1),
+                        color: _getStatusColor(employee.status).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: _getStatusColor(employee.status).withValues(alpha: $1),
+                          color: _getStatusColor(employee.status).withValues(alpha: 0.1),
                         ),
                       ),
                       child: Text(
@@ -288,10 +288,10 @@ class _EmployeesListScreenState extends State<EmployeesListScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(employee.status).withValues(alpha: $1),
+                    color: _getStatusColor(employee.status).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _getStatusColor(employee.status).withValues(alpha: $1),
+                      color: _getStatusColor(employee.status).withValues(alpha: 0.1),
                     ),
                   ),
                   child: Text(

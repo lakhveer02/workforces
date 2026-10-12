@@ -289,7 +289,7 @@ class HRDashboardView extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: _getDepartmentColor(dept.name).withValues(alpha: $1),
+                        color: _getDepartmentColor(dept.name).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(

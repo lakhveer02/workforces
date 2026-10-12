@@ -156,18 +156,18 @@ class MockDashboardRepository implements DashboardRepository {
   }
 
   LeaveBalance _generateLeaveBalance() {
-    return LeaveBalance(
-      annual: LeaveInfo(
+    return const LeaveBalance(
+      annual: const LeaveInfo(
         allocated: 20,
         used: 8,
         pending: 2,
       ),
-      sick: LeaveInfo(
+      sick: const LeaveInfo(
         allocated: 10,
         used: 3,
         pending: 0,
       ),
-      casual: LeaveInfo(
+      casual: const LeaveInfo(
         allocated: 5,
         used: 2,
         pending: 1,
@@ -219,21 +219,21 @@ class MockDashboardRepository implements DashboardRepository {
 
   List<StatCard> _generatePersonalStats() {
     return [
-      StatCard(
+      const StatCard(
         title: 'Hours This Week',
         value: '38.5',
         change: '+2.5',
         changeType: ChangeType.positive,
         icon: 'time',
       ),
-      StatCard(
+      const StatCard(
         title: 'Tasks Completed',
         value: '12',
         change: '+3',
         changeType: ChangeType.positive,
         icon: 'task',
       ),
-      StatCard(
+      const StatCard(
         title: 'Leave Balance',
         value: '12',
         change: '-2',

@@ -267,7 +267,7 @@ class _LeaveOverviewScreenState extends State<LeaveOverviewScreen> {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: ResponsiveLayout.isMobile(context) ? 1 : 2,
-              childAspectRatio: ResponsiveLayout.isMobile(context) ? 3.5 : 2.5,
+              childAspectRatio: ResponsiveLayout.isMobile(context) ? 2.5 : 2.2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),

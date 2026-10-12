@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../shared/widgets/common/app_card.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../domain/leave_models.dart';
 import '../../data/leave_repository.dart';
@@ -267,7 +266,7 @@ class _LeaveOverviewScreenState extends State<LeaveOverviewScreen> {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: ResponsiveLayout.isMobile(context) ? 1 : 2,
-              childAspectRatio: ResponsiveLayout.isMobile(context) ? 2.5 : 2.2,
+              childAspectRatio: ResponsiveLayout.isMobile(context) ? 3.5 : 2.8,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),

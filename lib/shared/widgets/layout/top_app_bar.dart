@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/theme/theme_bloc.dart';
 import '../../../features/auth/presentation/blocs/auth_bloc.dart';
 import '../../../shared/models/user.dart';
 import '../../../main.dart';
@@ -24,9 +25,9 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       elevation: 0,
-      scrolledUnderElevation: 1,
+      scrolledUnderElevation: 0,
       backgroundColor: theme.colorScheme.surface,
-      surfaceTintColor: theme.colorScheme.surfaceTint,
+      surfaceTintColor: Colors.transparent,
       leading: showMenuButton && onMenuPressed != null
           ? IconButton(
               onPressed: onMenuPressed,
@@ -161,14 +162,8 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ],
     ).then((themeMode) {
-      if (themeMode != null) {
-        // TODO: Implement theme switching with ThemeBloc
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Theme changed to ${themeMode.name}'),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+      if (themeMode != null && context.mounted) {
+        context.read<ThemeBloc>().add(ThemeChanged(themeMode));
       }
     });
   }

@@ -51,12 +51,23 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   
+  # Integration Testing
+  integration_test:
+    sdk: flutter
+  
   # Code Generation Tools
   build_runner: ^2.4.9           # Build system for code generation
   json_serializable: ^6.8.0      # JSON serialization code generation
   
+  # Testing & Mocking
+  mocktail: ^1.0.3               # Modern mocking library for tests
+  
   # Code Quality & Linting
   flutter_lints: ^4.0.0          # Official Flutter linting rules
+  
+  # App Branding & Assets
+  flutter_launcher_icons: ^0.13.1  # Generate app icons for all platforms
+  flutter_native_splash: ^2.4.0    # Generate native splash screens
 
 flutter:
   uses-material-design: true

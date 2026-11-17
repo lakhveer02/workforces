@@ -5,6 +5,7 @@ enum AppButtonType {
   primary,
   secondary,
   outline,
+  outlined,
   text,
   danger,
 }
@@ -18,111 +19,131 @@ enum AppButtonSize {
 class AppButton extends StatelessWidget {
   const AppButton({
     required this.onPressed,
-    required this.child,
+    this.child,
+    this.text,
     this.type = AppButtonType.primary,
     this.size = AppButtonSize.medium,
     this.isLoading = false,
     this.isFullWidth = false,
+    this.isEnabled = true,
     this.icon,
     this.iconPosition = IconPosition.leading,
     super.key,
-  });
+  }) : assert(child != null || text != null, 'Provide child or text');
 
   const AppButton.primary({
     required this.onPressed,
-    required this.child,
+    this.child,
+    this.text,
     this.size = AppButtonSize.medium,
     this.isLoading = false,
     this.isFullWidth = false,
+    this.isEnabled = true,
     this.icon,
     this.iconPosition = IconPosition.leading,
     super.key,
-  }) : type = AppButtonType.primary;
+  })  : type = AppButtonType.primary,
+        assert(child != null || text != null, 'Provide child or text');
 
   const AppButton.secondary({
     required this.onPressed,
-    required this.child,
+    this.child,
+    this.text,
     this.size = AppButtonSize.medium,
     this.isLoading = false,
     this.isFullWidth = false,
+    this.isEnabled = true,
     this.icon,
     this.iconPosition = IconPosition.leading,
     super.key,
-  }) : type = AppButtonType.secondary;
+  })  : type = AppButtonType.secondary,
+        assert(child != null || text != null, 'Provide child or text');
 
   const AppButton.outline({
     required this.onPressed,
-    required this.child,
+    this.child,
+    this.text,
     this.size = AppButtonSize.medium,
     this.isLoading = false,
     this.isFullWidth = false,
+    this.isEnabled = true,
     this.icon,
     this.iconPosition = IconPosition.leading,
     super.key,
-  }) : type = AppButtonType.outline;
+  })  : type = AppButtonType.outline,
+        assert(child != null || text != null, 'Provide child or text');
 
   const AppButton.text({
     required this.onPressed,
-    required this.child,
+    this.child,
+    this.text,
     this.size = AppButtonSize.medium,
     this.isLoading = false,
     this.isFullWidth = false,
+    this.isEnabled = true,
     this.icon,
     this.iconPosition = IconPosition.leading,
     super.key,
-  }) : type = AppButtonType.text;
+  })  : type = AppButtonType.text,
+        assert(child != null || text != null, 'Provide child or text');
 
   const AppButton.danger({
     required this.onPressed,
-    required this.child,
+    this.child,
+    this.text,
     this.size = AppButtonSize.medium,
     this.isLoading = false,
     this.isFullWidth = false,
+    this.isEnabled = true,
     this.icon,
     this.iconPosition = IconPosition.leading,
     super.key,
-  }) : type = AppButtonType.danger;
+  })  : type = AppButtonType.danger,
+        assert(child != null || text != null, 'Provide child or text');
 
   final VoidCallback? onPressed;
-  final Widget child;
+  final Widget? child;
+  final String? text;
   final AppButtonType type;
   final AppButtonSize size;
   final bool isLoading;
   final bool isFullWidth;
+  final bool isEnabled;
   final IconData? icon;
   final IconPosition iconPosition;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isEnabled = onPressed != null && !isLoading;
+    final enabled = isEnabled && onPressed != null && !isLoading;
 
     return SizedBox(
       width: isFullWidth ? double.infinity : null,
       height: _getHeight(),
-      child: _buildButton(theme, isEnabled),
+      child: _buildButton(theme, enabled),
     );
   }
 
   Widget _buildButton(ThemeData theme, bool isEnabled) {
-    final buttonChild = _buildButtonChild();
+    final buttonChild = _buildButtonChild(theme);
 
     switch (type) {
       case AppButtonType.primary:
         return ElevatedButton(
           onPressed: isEnabled ? onPressed : null,
-          style: _getElevatedButtonStyle(theme, isEnabled),
+          style: _getElevatedButtonStyle(theme),
           child: buttonChild,
         );
 
       case AppButtonType.secondary:
         return ElevatedButton(
           onPressed: isEnabled ? onPressed : null,
-          style: _getSecondaryButtonStyle(theme, isEnabled),
+          style: _getSecondaryButtonStyle(theme),
           child: buttonChild,
         );
 
       case AppButtonType.outline:
+      case AppButtonType.outlined:
         return OutlinedButton(
           onPressed: isEnabled ? onPressed : null,
           style: _getOutlinedButtonStyle(theme, isEnabled),
@@ -132,20 +153,20 @@ class AppButton extends StatelessWidget {
       case AppButtonType.text:
         return TextButton(
           onPressed: isEnabled ? onPressed : null,
-          style: _getTextButtonStyle(theme, isEnabled),
+          style: _getTextButtonStyle(theme),
           child: buttonChild,
         );
 
       case AppButtonType.danger:
         return ElevatedButton(
           onPressed: isEnabled ? onPressed : null,
-          style: _getDangerButtonStyle(theme, isEnabled),
+          style: _getDangerButtonStyle(theme),
           child: buttonChild,
         );
     }
   }
 
-  Widget _buildButtonChild() {
+  Widget _buildButtonChild(ThemeData theme) {
     if (isLoading) {
       return SizedBox(
         width: _getIconSize(),
@@ -154,12 +175,14 @@ class AppButton extends StatelessWidget {
           strokeWidth: 2,
           valueColor: AlwaysStoppedAnimation<Color>(
             type == AppButtonType.primary || type == AppButtonType.danger
-                ? Colors.white
-                : Colors.blue, // fallback color since we don't have context here
+                ? theme.colorScheme.onPrimary
+                : theme.colorScheme.primary,
           ),
         ),
       );
     }
+
+    final label = child ?? Text(text ?? '');
 
     if (icon != null) {
       final iconWidget = Icon(icon, size: _getIconSize());
@@ -168,27 +191,26 @@ class AppButton extends StatelessWidget {
       if (iconPosition == IconPosition.leading) {
         return Row(
           mainAxisSize: MainAxisSize.min,
-          children: [iconWidget, spacing, Flexible(child: child)],
-        );
-      } else {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [Flexible(child: child), spacing, iconWidget],
+          children: [iconWidget, spacing, Flexible(child: label)],
         );
       }
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [Flexible(child: label), spacing, iconWidget],
+      );
     }
 
-    return child;
+    return label;
   }
 
   double _getHeight() {
     switch (size) {
       case AppButtonSize.small:
-        return 32;
+        return 36;
       case AppButtonSize.medium:
-        return 40;
-      case AppButtonSize.large:
         return 48;
+      case AppButtonSize.large:
+        return 56;
     }
   }
 
@@ -223,81 +245,83 @@ class AppButton extends StatelessWidget {
         );
       case AppButtonSize.medium:
         return const EdgeInsets.symmetric(
-          horizontal: AppTheme.spaceMedium,
+          horizontal: AppTheme.spaceLarge,
           vertical: AppTheme.spaceSmall,
         );
       case AppButtonSize.large:
         return const EdgeInsets.symmetric(
-          horizontal: AppTheme.spaceLarge,
+          horizontal: AppTheme.spaceXLarge,
           vertical: AppTheme.spaceMedium,
         );
     }
   }
 
-  ButtonStyle _getElevatedButtonStyle(ThemeData theme, bool isEnabled) {
+  ButtonStyle _getElevatedButtonStyle(ThemeData theme) {
     return ElevatedButton.styleFrom(
       backgroundColor: theme.colorScheme.primary,
       foregroundColor: theme.colorScheme.onPrimary,
-      disabledBackgroundColor: theme.disabledColor,
-      disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+      disabledBackgroundColor: theme.disabledColor.withValues(alpha: 0.12),
+      disabledForegroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.38),
       padding: _getPadding(),
+      elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMD),
       ),
-      elevation: AppTheme.elevationSmall,
     );
   }
 
-  ButtonStyle _getSecondaryButtonStyle(ThemeData theme, bool isEnabled) {
+  ButtonStyle _getSecondaryButtonStyle(ThemeData theme) {
     return ElevatedButton.styleFrom(
-      backgroundColor: theme.colorScheme.secondary,
-      foregroundColor: theme.colorScheme.onSecondary,
-      disabledBackgroundColor: theme.disabledColor,
-      disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+      backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.12),
+      foregroundColor: theme.colorScheme.primary,
+      disabledBackgroundColor: theme.disabledColor.withValues(alpha: 0.12),
+      disabledForegroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.38),
       padding: _getPadding(),
+      elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMD),
       ),
-      elevation: AppTheme.elevationSmall,
     );
   }
 
   ButtonStyle _getOutlinedButtonStyle(ThemeData theme, bool isEnabled) {
     return OutlinedButton.styleFrom(
       foregroundColor: theme.colorScheme.primary,
-      disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+      disabledForegroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.38),
       side: BorderSide(
-        color: isEnabled ? theme.colorScheme.primary : theme.disabledColor,
+        color: isEnabled
+            ? theme.colorScheme.outline
+            : theme.disabledColor,
       ),
       padding: _getPadding(),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMD),
       ),
     );
   }
 
-  ButtonStyle _getTextButtonStyle(ThemeData theme, bool isEnabled) {
+  ButtonStyle _getTextButtonStyle(ThemeData theme) {
     return TextButton.styleFrom(
       foregroundColor: theme.colorScheme.primary,
-      disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+      disabledForegroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.38),
       padding: _getPadding(),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMD),
       ),
     );
   }
 
-  ButtonStyle _getDangerButtonStyle(ThemeData theme, bool isEnabled) {
+  ButtonStyle _getDangerButtonStyle(ThemeData theme) {
     return ElevatedButton.styleFrom(
       backgroundColor: theme.colorScheme.error,
       foregroundColor: theme.colorScheme.onError,
-      disabledBackgroundColor: theme.disabledColor,
-      disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+      disabledBackgroundColor: theme.disabledColor.withValues(alpha: 0.12),
+      disabledForegroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.38),
       padding: _getPadding(),
+      elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMD),
       ),
-      elevation: AppTheme.elevationSmall,
     );
   }
 }

@@ -5,8 +5,8 @@ import '../blocs/auth_bloc.dart';
 import '../../domain/auth_state.dart';
 import '../../../../shared/widgets/common/app_button.dart';
 import '../../../../shared/widgets/common/app_text_field.dart';
-import '../../../../shared/widgets/common/app_card.dart';
 import '../../../../shared/widgets/common/loading_overlay.dart';
+import '../../../../shared/widgets/brand/app_logo.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../main.dart';
@@ -22,9 +22,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _rememberMe = false;
-  bool _obscurePassword = true;
+  bool _rememberMe = true;
   bool _isLoading = false;
+
+  static const _demoAccounts = [
+    ('Admin', 'admin@workforceos.com'),
+    ('HR', 'hr@workforceos.com'),
+    ('Manager', 'manager@workforceos.com'),
+    ('Employee', 'employee@workforceos.com'),
+  ];
 
   @override
   void dispose() {
@@ -34,27 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Email is required';
-    }
-    
+    if (value == null || value.isEmpty) return 'Email is required';
     final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
-    
+    if (!emailRegex.hasMatch(value)) return 'Please enter a valid email address';
     return null;
   }
 
   String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
-    
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    }
-    
+    if (value == null || value.isEmpty) return 'Password is required';
+    if (value.length < 6) return 'Password must be at least 6 characters';
     return null;
   }
 
@@ -70,32 +64,34 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _handleForgotPassword() {
-    _showForgotPasswordDialog();
+  void _fillDemo(String email) {
+    setState(() {
+      _emailController.text = email;
+      _passwordController.text = 'password123';
+    });
   }
 
   void _showForgotPasswordDialog() {
     final emailController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Forgot Password'),
+        title: const Text('Reset password'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Enter your email address and we\'ll send you a link to reset your password.',
-              style: TextStyle(fontSize: 14),
+            Text(
+              'Enter your work email and we will send a reset link.',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
             AppTextField(
               controller: emailController,
-              labelText: 'Email Address',
+              labelText: 'Work email',
               keyboardType: TextInputType.emailAddress,
-              prefixIcon: const Icon(Icons.email_outlined),
+              prefixIcon: const Icon(Icons.mail_outline_rounded),
               validator: _validateEmail,
             ),
           ],
@@ -113,14 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Password reset link sent to your email'),
-                    backgroundColor: Colors.green,
-                  ),
+                  const SnackBar(content: Text('Reset link sent if the account exists')),
                 );
               }
             },
-            child: const Text('Send Reset Link'),
+            child: const Text('Send link'),
           ),
         ],
       ),
@@ -130,14 +123,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isMobile = Responsive.isMobile(context);
-    final isTablet = Responsive.isTablet(context);
+    final isWide = MediaQuery.sizeOf(context).width >= 960;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        setState(() {
-          _isLoading = state.isLoading;
-        });
+        setState(() => _isLoading = state.isLoading);
 
         if (state.isAuthenticated) {
           context.go(AppRouter.dashboard);
@@ -148,7 +138,6 @@ class _LoginScreenState extends State<LoginScreen> {
             SnackBar(
               content: Text(state.error ?? 'Login failed'),
               backgroundColor: theme.colorScheme.error,
-              behavior: SnackBarBehavior.floating,
             ),
           );
         }
@@ -156,320 +145,332 @@ class _LoginScreenState extends State<LoginScreen> {
       child: LoadingOverlay(
         isLoading: _isLoading,
         child: Scaffold(
-          body: SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: AppTheme.getResponsivePadding(context),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: isMobile ? double.infinity : 
-                             isTablet ? 500 : 
-                             450,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Logo and branding
-                      _buildHeader(context),
-                      
-                      const SizedBox(height: 48),
-                      
-                      // Login form
-                      _buildLoginForm(context),
-                      
-                      const SizedBox(height: 24),
-                      
-                      // Demo credentials info
-                      if (!isMobile) _buildDemoInfo(context),
-                      
-                      const SizedBox(height: 32),
-                      
-                      // Footer
-                      _buildFooter(context),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          backgroundColor: theme.colorScheme.surface,
+          body: isWide ? _buildSplitLayout() : _buildCompactLayout(),
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    final theme = Theme.of(context);
-    final isMobile = Responsive.isMobile(context);
-
-    return Column(
+  Widget _buildSplitLayout() {
+    return Row(
       children: [
-        // Logo
-        Container(
-          width: isMobile ? 80 : 100,
-          height: isMobile ? 80 : 100,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                theme.colorScheme.primary,
-                theme.colorScheme.primary.withValues(alpha: 0.8),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        Expanded(flex: 5, child: _BrandPanel()),
+        Expanded(
+          flex: 4,
+          child: ColoredBox(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 40),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: _buildLoginForm(showDemo: true),
+                ),
+              ),
             ),
-            borderRadius: BorderRadius.circular(20),
           ),
-          child: Icon(
-            Icons.business,
-            size: isMobile ? 40 : 50,
-            color: Colors.white,
-          ),
-        ),
-        
-        const SizedBox(height: 24),
-        
-        // Title
-        Text(
-          'WorkforceOS',
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-        
-        const SizedBox(height: 8),
-        
-        // Subtitle
-        Text(
-          'Enterprise Workforce Management',
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-          ),
-          textAlign: TextAlign.center,
         ),
       ],
     );
   }
 
-  Widget _buildLoginForm(BuildContext context) {
+  Widget _buildCompactLayout() {
+    return SafeArea(
+      child: Center(
+        child: SingleChildScrollView(
+          padding: AppTheme.getResponsivePadding(context),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 440),
+            child: Column(
+              children: [
+                const AppLogo(size: 64, showWordmark: true),
+                const SizedBox(height: 36),
+                _buildLoginForm(showDemo: !Responsive.isMobile(context)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginForm({required bool showDemo}) {
     final theme = Theme.of(context);
 
-    return AppCard(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Form title
-              Text(
-                'Sign In to Your Account',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              
-              const SizedBox(height: 32),
-              
-              // Email field
-              AppTextField(
-                controller: _emailController,
-                labelText: 'Email Address',
-                keyboardType: TextInputType.emailAddress,
-                prefixIcon: const Icon(Icons.email_outlined),
-                validator: _validateEmail,
-                textInputAction: TextInputAction.next,
-                enabled: !_isLoading,
-              ),
-              
-              const SizedBox(height: 20),
-              
-              // Password field
-              AppTextField(
-                controller: _passwordController,
-                labelText: 'Password',
-                obscureText: _obscurePassword,
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                ),
-                validator: _validatePassword,
-                textInputAction: TextInputAction.done,
-                onSubmitted: (_) => _handleLogin(),
-                enabled: !_isLoading,
-              ),
-              
-              const SizedBox(height: 20),
-              
-              // Remember me and forgot password
-              Row(
-                children: [
-                  Checkbox(
-                    value: _rememberMe,
-                    onChanged: _isLoading ? null : (value) {
-                      setState(() {
-                        _rememberMe = value ?? false;
-                      });
-                    },
-                  ),
-                  const Flexible(
-                    child: Text('Remember me'),
-                  ),
-                  const Spacer(),
-                  Flexible(
-                    child: TextButton(
-                      onPressed: _isLoading ? null : _handleForgotPassword,
-                      child: const Text('Forgot Password?'),
-                    ),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 32),
-              
-              // Login button
-              AppButton(
-                onPressed: _isLoading ? null : _handleLogin,
-                isLoading: _isLoading,
-                isFullWidth: true,
-                child: const Text('Sign In'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Welcome back',
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.6,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'Sign in to manage people, time, and payroll.',
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 32),
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: theme.brightness == Brightness.dark ? 0.24 : 0.04),
+                blurRadius: 24,
+                offset: const Offset(0, 12),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDemoInfo(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return AppCard(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  Icons.info_outline,
-                  size: 20,
-                  color: theme.colorScheme.primary,
+                AppTextField(
+                  controller: _emailController,
+                  labelText: 'Work email',
+                  hintText: 'you@company.com',
+                  keyboardType: TextInputType.emailAddress,
+                  prefixIcon: const Icon(Icons.mail_outline_rounded),
+                  validator: _validateEmail,
+                  textInputAction: TextInputAction.next,
+                  enabled: !_isLoading,
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  'Demo Accounts',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: theme.colorScheme.primary,
-                  ),
+                const SizedBox(height: 16),
+                AppTextField(
+                  controller: _passwordController,
+                  labelText: 'Password',
+                  hintText: 'Enter your password',
+                  obscureText: true,
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                  validator: _validatePassword,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _handleLogin(),
+                  enabled: !_isLoading,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: Checkbox(
+                        value: _rememberMe,
+                        onChanged: _isLoading
+                            ? null
+                            : (value) => setState(() => _rememberMe = value ?? false),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text('Keep me signed in'),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: _isLoading ? null : _showForgotPasswordDialog,
+                      child: const Text('Forgot password?'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                AppButton(
+                  onPressed: _isLoading ? null : _handleLogin,
+                  isLoading: _isLoading,
+                  isFullWidth: true,
+                  size: AppButtonSize.large,
+                  icon: Icons.arrow_forward_rounded,
+                  iconPosition: IconPosition.trailing,
+                  child: const Text('Sign in'),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            const Text('Use these credentials to test different roles:'),
-            const SizedBox(height: 8),
-            _buildDemoCredential('Admin', 'admin@workforceos.com'),
-            _buildDemoCredential('HR Manager', 'hr@workforceos.com'),
-            _buildDemoCredential('Manager', 'manager@workforceos.com'),
-            _buildDemoCredential('Employee', 'employee@workforceos.com'),
-            const SizedBox(height: 8),
-            Text(
-              'Password for all accounts: password123',
-              style: theme.textTheme.labelSmall?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        if (showDemo) ...[
+          const SizedBox(height: 20),
+          _buildDemoChips(),
+        ],
+        const SizedBox(height: 28),
+        Text(
+          '© ${DateTime.now().year} WorkforceOS',
+          textAlign: TextAlign.center,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.45),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildDemoCredential(String role, String email) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              '$role:',
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
+  Widget _buildDemoChips() {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Try a demo role',
+          style: theme.textTheme.labelMedium?.copyWith(
+            fontWeight: FontWeight.w600,
           ),
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                _emailController.text = email;
-                _passwordController.text = 'password123';
-              },
-              borderRadius: BorderRadius.circular(4),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                child: Text(
-                  email,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    decoration: TextDecoration.underline,
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: _demoAccounts
+              .map(
+                (account) => ActionChip(
+                  avatar: const Icon(Icons.person_outline, size: 16),
+                  label: Text(account.$1),
+                  onPressed: () => _fillDemo(account.$2),
+                ),
+              )
+              .toList(),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Password: password123',
+          style: theme.textTheme.labelSmall,
+        ),
+      ],
+    );
+  }
+}
+
+class _BrandPanel extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1E1B4B),
+            Color(0xFF312E81),
+            Color(0xFF4F46E5),
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          const Positioned(
+            right: -80,
+            top: -60,
+            child: _Glow(size: 280, opacity: 0.18),
+          ),
+          const Positioned(
+            left: -40,
+            bottom: 80,
+            child: _Glow(size: 180, opacity: 0.12),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(56, 48, 56, 48),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const AppLogo(size: 48, showWordmark: true, light: true),
+                const Spacer(),
+                Text(
+                  'The operating system\nfor your workforce.',
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    height: 1.15,
+                    letterSpacing: -1,
                   ),
                 ),
-              ),
+                const SizedBox(height: 16),
+                Text(
+                  'Attendance, leave, payroll, and performance — one calm workspace for HR and managers.',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.78),
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 36),
+                const Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _FeatureChip(icon: Icons.fingerprint_rounded, label: 'Smart attendance'),
+                    _FeatureChip(icon: Icons.event_available_rounded, label: 'Leave workflows'),
+                    _FeatureChip(icon: Icons.payments_outlined, label: 'Payroll clarity'),
+                    _FeatureChip(icon: Icons.insights_rounded, label: 'Live analytics'),
+                  ],
+                ),
+                const Spacer(),
+                Text(
+                  'Trusted by people teams who want less admin and more signal.',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.55),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildFooter(BuildContext context) {
-    final theme = Theme.of(context);
+class _Glow extends StatelessWidget {
+  const _Glow({required this.size, required this.opacity});
 
-    return Column(
-      children: [
-        Text(
-          '© 2024 WorkforceOS. All rights reserved.',
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+  final double size;
+  final double opacity;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white.withValues(alpha: opacity),
+      ),
+    );
+  }
+}
+
+class _FeatureChip extends StatelessWidget {
+  const _FeatureChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: Colors.white),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 13,
+            ),
           ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {
-                // TODO: Navigate to privacy policy
-              },
-              child: const Text('Privacy Policy'),
-            ),
-            Text(
-              ' • ',
-              style: TextStyle(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                // TODO: Navigate to terms of service
-              },
-              child: const Text('Terms of Service'),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

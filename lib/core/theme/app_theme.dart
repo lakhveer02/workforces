@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Modern Design System for WorkforceOS
-/// Inspired by Swiggy/Zomato/Zepto aesthetic with dynamic Light & Dark themes
+/// WorkforceOS enterprise design system — indigo, slate, and calm surfaces.
 class AppTheme {
   AppTheme._();
 
@@ -12,34 +11,34 @@ class AppTheme {
   // ═══════════════════════════════════════════════════════════════════════════════════
   
   // Brand Colors (Light)
-  static const Color _lightPrimary = Color(0xFFFC8019); // Swiggy orange
-  static const Color _lightPrimaryLight = Color(0xFFFFF3E8); // Very pale orange tint
-  static const Color _lightPrimaryDark = Color(0xFFE06812); // Darker press state
+  static const Color _lightPrimary = Color(0xFF4F46E5);
+  static const Color _lightPrimaryLight = Color(0xFFEEF2FF);
+  static const Color _lightPrimaryDark = Color(0xFF3730A3);
   
   // Surface Colors (Light)
-  static const Color _lightBackground = Color(0xFFF6F7FB);
+  static const Color _lightBackground = Color(0xFFF4F6FB);
   static const Color _lightSurface = Color(0xFFFFFFFF);
   static const Color _lightSurfaceElevated = Color(0xFFFFFFFF);
   static const Color _lightCard = Color(0xFFFFFFFF);
-  static const Color _lightCardBorder = Color(0xFFF1F5F9);
-  static const Color _lightCardSubtle = Color(0xFFF9FAFB);
+  static const Color _lightCardBorder = Color(0xFFE8ECF4);
+  static const Color _lightCardSubtle = Color(0xFFF8FAFC);
   
   // Text Colors (Light)
-  static const Color _lightTextPrimary = Color(0xFF1C1C1E);
-  static const Color _lightTextSecondary = Color(0xFF6B7280);
-  static const Color _lightTextTertiary = Color(0xFF9CA3AF);
+  static const Color _lightTextPrimary = Color(0xFF0F172A);
+  static const Color _lightTextSecondary = Color(0xFF64748B);
+  static const Color _lightTextTertiary = Color(0xFF94A3B8);
   static const Color _lightTextOnPrimary = Color(0xFFFFFFFF);
   
   // Semantic Colors (Light)
-  static const Color _lightSuccess = Color(0xFF12B76A);
+  static const Color _lightSuccess = Color(0xFF059669);
   static const Color _lightSuccessLight = Color(0xFFD1FAE5);
-  static const Color _lightWarning = Color(0xFFF59E0B);
+  static const Color _lightWarning = Color(0xFFD97706);
   static const Color _lightWarningLight = Color(0xFFFEF3C7);
-  static const Color _lightDanger = Color(0xFFEF4444);
+  static const Color _lightDanger = Color(0xFFDC2626);
   static const Color _lightDangerLight = Color(0xFFFEE2E2);
-  static const Color _lightInfo = Color(0xFF3B82F6);
-  static const Color _lightInfoLight = Color(0xFFEFF6FF);
-  static const Color _lightPurple = Color(0xFF8B5CF6);
+  static const Color _lightInfo = Color(0xFF0284C7);
+  static const Color _lightInfoLight = Color(0xFFE0F2FE);
+  static const Color _lightPurple = Color(0xFF7C3AED);
   static const Color _lightPurpleLight = Color(0xFFEDE9FE);
   
   // Borders & Dividers (Light)
@@ -59,23 +58,23 @@ class AppTheme {
   // ═══════════════════════════════════════════════════════════════════════════════════
   
   // Brand Colors (Dark)
-  static const Color _darkPrimary = Color(0xFFFF7722); // Vibrant orange for dark
-  static const Color _darkPrimaryLight = Color(0xFF2D1B11); // Dark orange tint
-  static const Color _darkPrimaryDark = Color(0xFFE06812); // Darker press state
+  static const Color _darkPrimary = Color(0xFF818CF8);
+  static const Color _darkPrimaryLight = Color(0xFF1E1B4B);
+  static const Color _darkPrimaryDark = Color(0xFF6366F1);
   
   // Surface Colors (Dark)
-  static const Color _darkBackground = Color(0xFF121214); // Deep dark background
-  static const Color _darkSurface = Color(0xFF1E1E22); // Elevated surface/cards
-  static const Color _darkSurfaceElevated = Color(0xFF28282E); // More elevated modals
-  static const Color _darkCard = Color(0xFF1E1E22);
-  static const Color _darkCardBorder = Color(0xFF2E2E34);
-  static const Color _darkCardSubtle = Color(0xFF26262B);
+  static const Color _darkBackground = Color(0xFF0B0F19);
+  static const Color _darkSurface = Color(0xFF131825);
+  static const Color _darkSurfaceElevated = Color(0xFF1C2434);
+  static const Color _darkCard = Color(0xFF131825);
+  static const Color _darkCardBorder = Color(0xFF243044);
+  static const Color _darkCardSubtle = Color(0xFF182033);
   
   // Text Colors (Dark)
-  static const Color _darkTextPrimary = Color(0xFFF3F4F6); // High readability off-white
-  static const Color _darkTextSecondary = Color(0xFF9CA3AF); // Muted grey
-  static const Color _darkTextTertiary = Color(0xFF6B7280); // Darker hint/placeholder
-  static const Color _darkTextOnPrimary = Color(0xFFFFFFFF);
+  static const Color _darkTextPrimary = Color(0xFFF1F5F9);
+  static const Color _darkTextSecondary = Color(0xFF94A3B8);
+  static const Color _darkTextTertiary = Color(0xFF64748B);
+  static const Color _darkTextOnPrimary = Color(0xFF0F172A);
   
   // Semantic Colors (Dark)
   static const Color _darkSuccess = Color(0xFF34D399);
@@ -84,10 +83,10 @@ class AppTheme {
   static const Color _darkWarningLight = Color(0xFF78350F);
   static const Color _darkDanger = Color(0xFFF87171);
   static const Color _darkDangerLight = Color(0xFF7F1D1D);
-  static const Color _darkInfo = Color(0xFF60A5FA);
-  static const Color _darkInfoLight = Color(0xFF1E3A8A);
-  static const Color _darkPurple = Color(0xFFA78BFA);
-  static const Color _darkPurpleLight = Color(0xFF3B0764);
+  static const Color _darkInfo = Color(0xFF38BDF8);
+  static const Color _darkInfoLight = Color(0xFF0C4A6E);
+  static const Color _darkPurple = Color(0xFFC4B5FD);
+  static const Color _darkPurpleLight = Color(0xFF2E1065);
   
   // Borders & Dividers (Dark)
   static const Color _darkBorder = Color(0xFF2E2E34);
@@ -297,6 +296,40 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colors.background,
+      visualDensity: VisualDensity.standard,
+      splashFactory: InkRipple.splashFactory,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+        },
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMD)),
+        elevation: elevationMedium,
+      ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusLG)),
+        backgroundColor: colors.modalBg,
+        surfaceTintColor: Colors.transparent,
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: colors.modalBg,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radiusXL)),
+        ),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: colors.surface,
+        indicatorColor: colors.primary.withValues(alpha: 0.12),
+        selectedIconTheme: IconThemeData(color: colors.primary),
+        unselectedIconTheme: IconThemeData(color: colors.textTertiary),
+      ),
       
       // Typography using Inter font with modern sizing
       textTheme: GoogleFonts.interTextTheme().copyWith(
@@ -573,6 +606,40 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colors.background,
+      visualDensity: VisualDensity.standard,
+      splashFactory: InkRipple.splashFactory,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+        },
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMD)),
+        elevation: elevationMedium,
+      ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusLG)),
+        backgroundColor: colors.modalBg,
+        surfaceTintColor: Colors.transparent,
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: colors.modalBg,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radiusXL)),
+        ),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: colors.surface,
+        indicatorColor: colors.primary.withValues(alpha: 0.12),
+        selectedIconTheme: IconThemeData(color: colors.primary),
+        unselectedIconTheme: IconThemeData(color: colors.textTertiary),
+      ),
       
       // Typography using Inter font with modern sizing
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
@@ -855,9 +922,9 @@ class AppTheme {
   // Custom gradient for primary actions
   static LinearGradient get primaryGradient {
     return const LinearGradient(
-      colors: [_lightPrimary, Color(0xFFFF9500)],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
+      colors: [_lightPrimary, Color(0xFF7C3AED)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
     );
   }
 
@@ -1005,48 +1072,53 @@ class AppThemeColors {
 /// Used by legacy widgets that reference AppColors.primary statically
 /// Legacy static color access for backward compatibility
 class AppColors {
-  static const Color primary = Color(0xFFFC8019);   
-  static const Color secondary = Color(0xFFF59E0B); 
-  static const Color error = Color(0xFFEF4444);     
-  static const Color success = Color(0xFF12B76A);   
-  static const Color warning = Color(0xFFF59E0B);   
-  static const Color info = Color(0xFF3B82F6);      
-  static const Color gray50 = Color(0xFFF9FAFB);    
-  static const Color gray400 = Color(0xFF9CA3AF);   
-  static const Color gray600 = Color(0xFF6B7280);   
-  static const Color gray900 = Color(0xFF1C1C1E);   
+  static const Color primary = Color(0xFF4F46E5);   
+  static const Color secondary = Color(0xFF7C3AED); 
+  static const Color error = Color(0xFFDC2626);     
+  static const Color success = Color(0xFF059669);   
+  static const Color warning = Color(0xFFD97706);   
+  static const Color info = Color(0xFF0284C7);      
+  static const Color gray50 = Color(0xFFF8FAFC);    
+  static const Color gray400 = Color(0xFF94A3B8);   
+  static const Color gray600 = Color(0xFF64748B);   
+  static const Color gray900 = Color(0xFF0F172A);   
 }
 
-/// Modern theme colors for context.colors access
+/// Theme-aware palette. Always read via `context.colors`.
 class ThemeColors {
-  const ThemeColors();
-  
-  // Instance getters for context.colors access matching the widget expectations
-  Color get primary => AppColors.primary;
-  Color get secondary => AppColors.secondary;
-  Color get background => const Color(0xFFF6F7FB); 
-  Color get warning => AppColors.warning;
-  Color get success => AppColors.success;
-  Color get error => AppColors.error;
-  Color get info => AppColors.info;
-  Color get card => const Color(0xFFFFFFFF); 
-  Color get cardBorder => const Color(0xFFF1F5F9); 
-  Color get surface => const Color(0xFFFFFFFF); 
-  Color get danger => AppColors.error;
-  Color get cardSubtle => AppColors.gray50;
-  Color get textPrimary => AppColors.gray900;
-  Color get textSecondary => AppColors.gray600;
-  Color get textTertiary => AppColors.gray400;
-  Color get textOnPrimary => const Color(0xFFFFFFFF);
-  Color get border => const Color(0xFFE5E7EB);
+  const ThemeColors(this._palette);
+
+  factory ThemeColors.of(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return ThemeColors(AppTheme.getColors(isDark));
+  }
+
+  final AppThemeColors _palette;
+
+  Color get primary => _palette.primary;
+  Color get secondary => _palette.purple;
+  Color get background => _palette.background;
+  Color get warning => _palette.warning;
+  Color get success => _palette.success;
+  Color get error => _palette.danger;
+  Color get info => _palette.info;
+  Color get card => _palette.card;
+  Color get cardBorder => _palette.cardBorder;
+  Color get surface => _palette.surface;
+  Color get danger => _palette.danger;
+  Color get cardSubtle => _palette.cardSubtle;
+  Color get textPrimary => _palette.textPrimary;
+  Color get textSecondary => _palette.textSecondary;
+  Color get textTertiary => _palette.textTertiary;
+  Color get textOnPrimary => _palette.textOnPrimary;
+  Color get border => _palette.border;
 }
 
 /// Extension to easily access current theme colors from BuildContext
 extension AppThemeExtension on BuildContext {
-  ThemeColors get colors {
-    // Return the ThemeColors instance for modern widget compatibility
-    return const ThemeColors();
-  }
+  ThemeColors get colors => ThemeColors.of(this);
   
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
+
+  AppThemeColors get palette => AppTheme.getColors(isDarkMode);
 }

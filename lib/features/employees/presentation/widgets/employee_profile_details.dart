@@ -27,9 +27,9 @@ class EmployeeProfileDetails extends StatelessWidget {
               _buildDetailRow(context, 'Last Name', employee.lastName),
               _buildDetailRow(context, 'Email Address', employee.email),
               if (employee.phone != null)
-                _buildDetailRow(context, 'Phone Number', employee.phone!),
+                _buildDetailRow(context, 'Phone Number', employee.phone ?? ''),
               if (employee.dateOfBirth != null)
-                _buildDetailRow(context, 'Date of Birth', _formatDate(employee.dateOfBirth!)),
+                _buildDetailRow(context, 'Date of Birth', _formatDate(employee.dateOfBirth ?? DateTime.now())),
             ],
           ),
           
@@ -42,7 +42,7 @@ class EmployeeProfileDetails extends StatelessWidget {
               'Address Information',
               Icons.location_on,
               [
-                _buildDetailRow(context, 'Full Address', employee.address!),
+                _buildDetailRow(context, 'Full Address', employee.address ?? ''),
                 // You could break down address into components here
                 // _buildDetailRow(context, 'Street', employee.street),
                 // _buildDetailRow(context, 'City', employee.city),

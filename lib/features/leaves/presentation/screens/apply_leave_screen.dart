@@ -275,8 +275,15 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                           return DropdownMenuItem(
                             value: type,
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Expanded(child: Text(type.displayName)),
+                                Flexible(
+                                  child: Text(
+                                    type.displayName,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
                                 Text(
                                   '${balance.available.toStringAsFixed(1)} available',
                                   style: theme.textTheme.bodySmall?.copyWith(
@@ -314,17 +321,13 @@ class _ApplyLeaveScreenState extends State<ApplyLeaveScreen> {
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                'Available: ${_selectedLeaveBalance!.available} days',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '(${_selectedLeaveBalance!.used} used of ${_selectedLeaveBalance!.totalEntitled})',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.outline,
+                              Expanded(
+                                child: Text(
+                                  'Available: ${_selectedLeaveBalance!.available} days (${_selectedLeaveBalance!.used} used of ${_selectedLeaveBalance!.totalEntitled})',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],

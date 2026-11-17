@@ -92,18 +92,21 @@ class AppEmptyState extends StatelessWidget {
         children: [
           // Icon or Illustration
           Container(
-            width: 120,
-            height: 120,
+            width: 96,
+            height: 96,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppTheme.accent, AppTheme.warning],
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  const Color(0xFF7C3AED),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.accent.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.28),
                   blurRadius: 24,
                   offset: const Offset(0, 8),
                 ),
@@ -135,8 +138,8 @@ class AppEmptyState extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: AppTheme.buz,
-              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.w700,
             ),
             textAlign: TextAlign.center,
           ),
@@ -147,7 +150,7 @@ class AppEmptyState extends StatelessWidget {
           Text(
             subtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.soluk,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.64),
               height: 1.5,
             ),
             textAlign: TextAlign.center,

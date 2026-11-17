@@ -51,12 +51,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(user),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
                   BlocBuilder<DashboardBloc, DashboardState>(
                     builder: (context, dashboardState) {
                       if (dashboardState is DashboardLoading) {
@@ -125,34 +125,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildHeader(User user) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          _getGreeting(),
-          style: TextStyle(
-            fontSize: 14,
-            color: context.colors.textSecondary,
-          ),
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF312E81), Color(0xFF4F46E5), Color(0xFF6366F1)],
         ),
-        const SizedBox(height: 4),
-        Text(
-          user.fullName,
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: context.colors.textPrimary,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _getGreeting(),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.78),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  user.fullName,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.4,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _getRoleDescription(user.role),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.8),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          _getRoleDescription(user.role),
-          style: TextStyle(
-            fontSize: 16,
-            color: context.colors.textSecondary,
+          CircleAvatar(
+            radius: 26,
+            backgroundColor: Colors.white.withValues(alpha: 0.18),
+            child: Text(
+              user.initials,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

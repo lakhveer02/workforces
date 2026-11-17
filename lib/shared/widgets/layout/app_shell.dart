@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../features/auth/presentation/blocs/auth_bloc.dart';
 import '../../../features/auth/domain/auth_state.dart';
 import '../../../shared/models/user.dart';
+import '../../../shared/widgets/brand/app_logo.dart';
 import '../../../main.dart';
 import 'navigation_menu.dart';
 import 'top_app_bar.dart';
@@ -89,6 +90,21 @@ class _AppShellState extends State<AppShell> {
   }
 
   Widget _buildMobileLayout(User user) {
+    final bottomNavDestinations = NavigationMenu.getBottomNavDestinations(user.role);
+    
+    // Ensure destinations list is not empty
+    if (bottomNavDestinations.isEmpty) {
+      return const Scaffold(
+        body: Center(child: Text('No navigation destinations available')),
+      );
+    }
+    
+    // Clamp the selected index to valid bottom nav range
+    // Bottom nav only shows first 5 items, but shell can have more routes
+    final currentIndex = widget.navigationShell.currentIndex;
+    final maxIndex = bottomNavDestinations.length - 1;
+    final bottomNavIndex = currentIndex < 0 ? 0 : (currentIndex > maxIndex ? maxIndex : currentIndex);
+    
     return Scaffold(
       key: _scaffoldKey,
       appBar: TopAppBar(
@@ -103,9 +119,11 @@ class _AppShellState extends State<AppShell> {
       ),
       body: widget.navigationShell,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: widget.navigationShell.currentIndex,
+        selectedIndex: bottomNavIndex,
         onDestinationSelected: _onDestinationSelected,
-        destinations: NavigationMenu.getBottomNavDestinations(user.role),
+        destinations: bottomNavDestinations,
+        height: 72,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       ),
     );
   }
@@ -260,59 +278,65 @@ class NavigationDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final destinations = NavigationMenu.getDrawerDestinations(user.role);
 
+    final theme = Theme.of(context);
     return Drawer(
       child: Column(
         children: [
-          // Header with user info
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF1E1B4B), Color(0xFF4F46E5)],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white,
-                  child: Text(
-                    user.initials,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CircleAvatar(
+                    radius: 26,
+                    backgroundColor: Colors.white,
+                    child: Text(
+                      user.initials,
+                      style: TextStyle(
+                        color: theme.colorScheme.primary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  user.fullName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                  const SizedBox(height: 12),
+                  Text(
+                    user.fullName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-                Text(
-                  user.role.displayName,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
+                  Text(
+                    user.role.displayName,
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          // Navigation items
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               itemCount: destinations.length,
               itemBuilder: (context, index) {
                 final destination = destinations[index];
+                final selected = index == currentIndex;
                 return ListTile(
-                  leading: Icon(destination.icon),
+                  leading: Icon(selected ? destination.selectedIcon : destination.icon),
                   title: Text(destination.label),
-                  selected: index == currentIndex,
+                  selected: selected,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   onTap: () => onDestinationSelected(index),
                 );
               },
@@ -353,61 +377,20 @@ class NavigationSidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final destinations = NavigationMenu.getSidebarDestinations(user.role);
 
+    final theme = Theme.of(context);
     return Container(
-      color: Theme.of(context).colorScheme.surface,
+      color: theme.colorScheme.surface,
       child: Column(
         children: [
-          // Logo/Brand section
-          if (expanded) ...[
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.business,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'WorkforceOS',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 32),
-          ] else ...[
-            const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.business,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-
-          // Navigation items
+          Padding(
+            padding: EdgeInsets.fromLTRB(expanded ? 16 : 12, 24, expanded ? 16 : 12, 20),
+            child: expanded
+                ? const AppLogo(size: 40, showWordmark: true)
+                : const AppLogo(size: 40),
+          ),
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               itemCount: destinations.length,
               itemBuilder: (context, index) {
                 final destination = destinations[index];
@@ -415,33 +398,55 @@ class NavigationSidebar extends StatelessWidget {
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isSelected 
-                        ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
-                        : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: ListTile(
-                      leading: Icon(
-                        destination.icon,
-                        color: isSelected 
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                      ),
-                      title: expanded ? Text(
-                        destination.label,
-                        style: TextStyle(
-                          color: isSelected 
-                            ? Theme.of(context).colorScheme.primary
-                            : null,
-                          fontWeight: isSelected ? FontWeight.w600 : null,
-                        ),
-                      ) : null,
+                  child: Material(
+                    color: isSelected
+                        ? theme.colorScheme.primary.withValues(alpha: 0.1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                    child: InkWell(
                       onTap: () => onDestinationSelected(index),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: expanded ? 16 : 0,
-                        vertical: 4,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: isSelected
+                              ? Border(
+                                  left: BorderSide(
+                                    color: theme.colorScheme.primary,
+                                    width: 3,
+                                  ),
+                                )
+                              : null,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: expanded ? 12 : 0,
+                          vertical: 12,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: expanded
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              isSelected ? destination.selectedIcon : destination.icon,
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface.withValues(alpha: 0.65),
+                            ),
+                            if (expanded) ...[
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  destination.label,
+                                  style: TextStyle(
+                                    color: isSelected ? theme.colorScheme.primary : null,
+                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

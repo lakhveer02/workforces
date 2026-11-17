@@ -42,11 +42,13 @@ class AppCard extends StatelessWidget {
     final theme = Theme.of(context);
     
     Widget card = Card(
-      elevation: elevation ?? AppTheme.elevationSmall,
+      elevation: elevation ?? 0,
       color: color ?? theme.colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: borderRadius ?? BorderRadius.circular(AppTheme.radiusMedium),
-        side: border ?? BorderSide.none,
+        borderRadius: borderRadius ?? BorderRadius.circular(AppTheme.radiusMD),
+        side: border ?? BorderSide(
+          color: theme.colorScheme.outline.withValues(alpha: 0.6),
+        ),
       ),
       margin: margin ?? EdgeInsets.zero,
       clipBehavior: clipBehavior,
@@ -100,7 +102,7 @@ class AppInfoCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppTheme.spaceSmall),
               decoration: BoxDecoration(
-                color: (color ?? theme.colorScheme.primary).withOpacity(0.12),
+                color: (color ?? theme.colorScheme.primary).withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
               ),
               child: Icon(

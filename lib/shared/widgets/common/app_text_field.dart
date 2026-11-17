@@ -125,8 +125,8 @@ class _AppTextFieldState extends State<AppTextField> {
       suffixIcon: _buildSuffixIcon(theme),
       filled: true,
       fillColor: widget.enabled 
-          ? theme.colorScheme.surface 
-          : theme.disabledColor.withOpacity(0.12),
+          ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35)
+          : theme.disabledColor.withValues(alpha: 0.12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
         borderSide: BorderSide(

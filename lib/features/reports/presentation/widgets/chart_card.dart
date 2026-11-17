@@ -164,47 +164,56 @@ class ChartCard extends StatelessWidget {
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        // Value label
-                        Text(
-                          point.value.toInt().toString(),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.soluk,
-                            fontSize: 10,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // Reserve space for texts and spacing: top text (14) + gap (4) + bottom gap (4) + bottom text (14) = 36px
+                        final availableHeight = constraints.maxHeight - 36;
+                        final barHeight = (availableHeight * heightRatio).clamp(10.0, availableHeight);
                         
-                        // Bar
-                        Container(
-                          height: (height - 120) * heightRatio,
-                          decoration: BoxDecoration(
-                            color: point.color != null
-                                ? Color(int.parse(point.color!.replaceAll('#', '0xFF')))
-                                : AppTheme.primaryStart,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(4),
-                              topRight: Radius.circular(4),
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Value label
+                            Text(
+                              point.value.toInt().toString(),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppTheme.soluk,
+                                fontSize: 10,
+                              ),
                             ),
-                          ),
-                        ),
-                        
-                        const SizedBox(height: 8),
-                        
-                        // Label
-                        Text(
-                          point.label,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.buz,
-                            fontSize: 10,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                            const SizedBox(height: 4),
+                            
+                            // Bar
+                            Container(
+                              height: barHeight,
+                              decoration: BoxDecoration(
+                                color: point.color != null
+                                    ? Color(int.parse(point.color!.replaceAll('#', '0xFF')))
+                                    : AppTheme.primaryStart,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(4),
+                                  topRight: Radius.circular(4),
+                                ),
+                              ),
+                            ),
+                            
+                            const SizedBox(height: 4),
+                            
+                            // Label
+                            Text(
+                              point.label,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppTheme.buz,
+                                fontSize: 10,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 );

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_bloc.dart';
 import 'core/router/app_router.dart';
+import 'core/config/app_config.dart';
 import 'features/auth/presentation/blocs/auth_bloc.dart';
 import 'features/auth/data/auth_repository.dart';
 import 'features/dashboard/presentation/blocs/dashboard_bloc.dart';
@@ -18,6 +19,14 @@ import 'features/dashboard/data/dashboard_repository.dart';
 /// - Complete HRMS functionality
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize environment configuration
+  // Set via --dart-define=ENVIRONMENT=staging
+  const environment = String.fromEnvironment('ENVIRONMENT', defaultValue: 'development');
+  AppConfig.initialize(environment: environment);
+  
+  debugPrint('🚀 Starting WorkforceOS in ${AppConfig.instance.environment.name} mode');
+  debugPrint('📡 API Base URL: ${AppConfig.instance.apiBaseUrl}');
 
   // Set up error handling
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -116,7 +125,7 @@ class WorkforceOSApp extends StatelessWidget {
                   title: 'WorkforceOS',
                   debugShowCheckedModeBanner: false,
                   
-                  // Dynamic Theming with Swiggy/Zomato aesthetic
+                  // Enterprise light / dark theming
                   theme: AppTheme.lightTheme,
                   darkTheme: AppTheme.darkTheme,
                   themeMode: themeState.themeMode,

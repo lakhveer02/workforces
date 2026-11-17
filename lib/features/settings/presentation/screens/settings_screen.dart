@@ -531,27 +531,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Widget? trailing,
     VoidCallback? onTap,
   }) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spaceMedium,
-        vertical: 4,
-      ),
-      leading: leading,
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: AppTheme.buz,
-          fontWeight: FontWeight.w500,
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.spaceMedium,
+          vertical: 4,
         ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: AppTheme.soluk,
+        leading: leading,
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: AppTheme.buz,
+            fontWeight: FontWeight.w500,
+          ),
         ),
+        subtitle: Text(
+          subtitle,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: AppTheme.soluk,
+          ),
+        ),
+        trailing: trailing,
+        onTap: onTap,
       ),
-      trailing: trailing,
-      onTap: onTap,
     );
   }
 
@@ -562,35 +565,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required ValueChanged<bool>? onChanged,
     required IconData icon,
   }) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spaceMedium,
-        vertical: 4,
-      ),
-      leading: Icon(
-        icon,
-        color: AppTheme.primaryStart,
-        size: 20,
-      ),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: AppTheme.buz,
-          fontWeight: FontWeight.w500,
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.spaceMedium,
+          vertical: 4,
         ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: AppTheme.soluk,
+        leading: Icon(
+          icon,
+          color: AppTheme.primaryStart,
+          size: 20,
         ),
-      ),
-      trailing: Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: AppTheme.basari,
-        inactiveThumbColor: AppTheme.soluk,
-        inactiveTrackColor: AppTheme.panel,
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: AppTheme.buz,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: AppTheme.soluk,
+          ),
+        ),
+        trailing: Switch(
+          value: value,
+          onChanged: onChanged,
+          activeColor: AppTheme.basari,
+          inactiveThumbColor: AppTheme.soluk,
+          inactiveTrackColor: AppTheme.panel,
+        ),
       ),
     );
   }

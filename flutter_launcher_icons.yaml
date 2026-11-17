@@ -1,0 +1,43 @@
+# Flutter Launcher Icons Configuration
+# Run: flutter pub run flutter_launcher_icons
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  web:
+    generate: true
+  windows:
+    generate: true
+  macos:
+    generate: true
+  
+  # App icon image path (place your icon at this location)
+  image_path: "assets/icons/app_icon.png"
+  
+  # Android-specific configurations
+  android:
+    adaptive_icon_background: "#2563EB" # Primary blue color
+    adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+  
+  # iOS-specific configurations
+  ios:
+    remove_alpha_ios: true
+  
+  # Web-specific configurations
+  web:
+    image_path: "assets/icons/app_icon_web.png"
+    background_color: "#2563EB"
+    theme_color: "#2563EB"
+  
+  # Windows-specific configurations
+  windows:
+    image_path: "assets/icons/app_icon.png"
+    icon_size: 256
+  
+  # macOS-specific configurations
+  macos:
+    image_path: "assets/icons/app_icon.png"
+
+# NOTE: After updating this file, run:
+# flutter pub get
+# flutter pub run flutter_launcher_icons

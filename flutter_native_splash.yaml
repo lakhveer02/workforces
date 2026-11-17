@@ -1,0 +1,52 @@
+# Flutter Native Splash Configuration
+# Run: flutter pub run flutter_native_splash:create
+
+flutter_native_splash:
+  # Background color (WorkforceOS primary color)
+  color: "#FFFFFF"
+  color_dark: "#1C1C1E"
+  
+  # Splash image configuration
+  image: assets/images/splash_logo.png
+  image_dark: assets/images/splash_logo_dark.png
+  
+  # Branding image (optional - appears at bottom)
+  branding: assets/images/splash_branding.png
+  branding_dark: assets/images/splash_branding_dark.png
+  
+  # Branding mode: bottom, center, or bottomRight
+  branding_mode: bottom
+  
+  # Platform configurations
+  android: true
+  ios: true
+  web: true
+  
+  # Android-specific settings
+  android_12:
+    # Android 12+ splash screen
+    image: assets/images/splash_logo.png
+    color: "#FFFFFF"
+    image_dark: assets/images/splash_logo_dark.png
+    color_dark: "#1C1C1E"
+    icon_background_color: "#2563EB"
+    icon_background_color_dark: "#1E40AF"
+  
+  android_gravity: center
+  android_fullscreen: true
+  
+  # iOS-specific settings
+  ios_content_mode: center
+  
+  # Web-specific settings
+  web_image_mode: center
+  
+  # Preserve splash screen until app initialization
+  android_disable_fullscreen: false
+  fullscreen: true
+
+# NOTE: After updating this file:
+# 1. Ensure image assets exist at specified paths
+# 2. Run: flutter pub get
+# 3. Run: flutter pub run flutter_native_splash:create
+# 4. For removal: flutter pub run flutter_native_splash:remove

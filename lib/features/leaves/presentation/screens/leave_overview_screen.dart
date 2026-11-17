@@ -261,22 +261,27 @@ class _LeaveOverviewScreenState extends State<LeaveOverviewScreen> {
             ),
           )
         else
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: ResponsiveLayout.isMobile(context) ? 1 : 2,
-              childAspectRatio: ResponsiveLayout.isMobile(context) ? 3.5 : 2.8,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-            ),
-            itemCount: _leaveBalances.length,
-            itemBuilder: (context, index) {
-              return LeaveBalanceCard(
-                balance: _leaveBalances[index],
-                onTap: () {
-                  // Could navigate to detailed balance view
-                },
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final crossAxisCount = ResponsiveLayout.isMobile(context) ? 1 : 2;
+              final spacing = 12.0;
+              final totalSpacing = spacing * (crossAxisCount - 1);
+              final cardWidth = (constraints.maxWidth - totalSpacing) / crossAxisCount;
+              
+              return Wrap(
+                spacing: spacing,
+                runSpacing: spacing,
+                children: _leaveBalances.map((balance) {
+                  return SizedBox(
+                    width: cardWidth,
+                    child: LeaveBalanceCard(
+                      balance: balance,
+                      onTap: () {
+                        // Could navigate to detailed balance view
+                      },
+                    ),
+                  );
+                }).toList(),
               );
             },
           ),

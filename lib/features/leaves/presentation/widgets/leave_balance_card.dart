@@ -21,7 +21,7 @@ class LeaveBalanceCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -29,7 +29,7 @@ class LeaveBalanceCard extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: _getLeaveTypeColor(balance.leaveType).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
@@ -37,10 +37,10 @@ class LeaveBalanceCard extends StatelessWidget {
                     child: Icon(
                       _getLeaveTypeIcon(balance.leaveType),
                       color: _getLeaveTypeColor(balance.leaveType),
-                      size: 20,
+                      size: 18,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class LeaveBalanceCard extends StatelessWidget {
                 ],
               ),
               
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               
               // Balance display
               Row(
@@ -110,7 +110,7 @@ class LeaveBalanceCard extends StatelessWidget {
                 ],
               ),
               
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               
               // Progress bar
               LinearProgressIndicator(
@@ -121,7 +121,7 @@ class LeaveBalanceCard extends StatelessWidget {
                 ),
               ),
               
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               
               // Usage details
               Row(

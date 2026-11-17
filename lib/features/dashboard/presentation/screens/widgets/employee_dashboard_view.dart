@@ -201,7 +201,7 @@ class EmployeeDashboardView extends StatelessWidget {
           icon: Icons.calendar_today,
         ),
         const SizedBox(height: 16),
-        _buildScheduleList(data.todaySchedule),
+        _buildScheduleList(context, data.todaySchedule),
       ],
     );
   }
@@ -215,10 +215,10 @@ class EmployeeDashboardView extends StatelessWidget {
   }) {
     return Card(
       elevation: 0,
+      clipBehavior: Clip.antiAlias,
       color: color.withValues(alpha: 0.1),
       child: InkWell(
         onTap: () {
-          // TODO: Implement punch in/out functionality
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(isPunchedIn 
@@ -228,23 +228,25 @@ class EmployeeDashboardView extends StatelessWidget {
             ),
           );
         },
-        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: 32,
-                color: color,
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.16),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 24, color: color),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: color,
                 ),
                 textAlign: TextAlign.center,
@@ -264,26 +266,29 @@ class EmployeeDashboardView extends StatelessWidget {
   ) {
     return Card(
       elevation: 0,
+      clipBehavior: Clip.antiAlias,
       color: color.withValues(alpha: 0.1),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: 32,
-                color: color,
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.16),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 24, color: color),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: color,
                 ),
                 textAlign: TextAlign.center,
@@ -295,28 +300,29 @@ class EmployeeDashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildScheduleList(List<ScheduleItem> schedule) {
+  Widget _buildScheduleList(BuildContext context, List<ScheduleItem> schedule) {
+    final theme = Theme.of(context);
     if (schedule.isEmpty) {
       return Card(
         elevation: 0,
-        color: AppColors.gray50,
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(28),
           child: Column(
             children: [
               Icon(
                 Icons.calendar_today_outlined,
-                size: 48,
-                color: AppColors.gray400,
+                size: 40,
+                color: theme.colorScheme.outline,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
-                'No Schedule Today',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.gray600,
-                ),
+                'Nothing on the calendar',
+                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Your schedule for today will show up here.',
+                style: theme.textTheme.bodySmall,
               ),
             ],
           ),
@@ -326,64 +332,37 @@ class EmployeeDashboardView extends StatelessWidget {
     
     return Card(
       elevation: 0,
-      color: AppColors.gray50,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         child: Column(
           children: schedule.map((item) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                children: [
-                  Container(
-                    width: 60,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      DateFormat.Hm().format(item.time),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                      textAlign: TextAlign.center,
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                leading: Container(
+                  width: 56,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    DateFormat.Hm().format(item.time),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.title,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.gray900,
-                          ),
-                        ),
-                        Text(
-                          item.type.name.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.gray600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right,
-                    size: 16,
-                    color: AppColors.gray600,
-                  ),
-                ],
+                ),
+                title: Text(item.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(item.type.name.toUpperCase()),
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: theme.colorScheme.outline,
+                ),
               ),
             );
           }).toList(),

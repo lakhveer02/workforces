@@ -30,44 +30,47 @@ class TaskFilterBar extends StatelessWidget {
           bottom: BorderSide(color: AppTheme.structuralLine),
         ),
       ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.filter_list,
-            color: AppTheme.soluk,
-            size: 20,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            'Filters',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.buz,
-              fontWeight: FontWeight.w500,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            Icon(
+              Icons.filter_list,
+              color: AppTheme.soluk,
+              size: 20,
             ),
-          ),
-          const SizedBox(width: AppTheme.spaceMedium),
-          
-          // Project filter
-          _buildProjectFilter(context),
-          const SizedBox(width: AppTheme.spaceSmall),
-          
-          // Priority filter
-          _buildPriorityFilter(context),
-          
-          const Spacer(),
-          
-          // Clear filters button
-          if (hasFilters)
-            TextButton.icon(
-              onPressed: onClearFilters,
-              icon: const Icon(Icons.clear, size: 16),
-              label: const Text('Clear'),
-              style: TextButton.styleFrom(
-                foregroundColor: AppTheme.soluk,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            const SizedBox(width: 8),
+            Text(
+              'Filters',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppTheme.buz,
+                fontWeight: FontWeight.w500,
               ),
             ),
-        ],
+            const SizedBox(width: AppTheme.spaceMedium),
+            
+            // Project filter
+            _buildProjectFilter(context),
+            const SizedBox(width: AppTheme.spaceSmall),
+            
+            // Priority filter
+            _buildPriorityFilter(context),
+            
+            const SizedBox(width: AppTheme.spaceMedium),
+            
+            // Clear filters button
+            if (hasFilters)
+              TextButton.icon(
+                onPressed: onClearFilters,
+                icon: const Icon(Icons.clear, size: 16),
+                label: const Text('Clear'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppTheme.soluk,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
